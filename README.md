@@ -1,4 +1,4 @@
-# ACADEM'ÎLE — Hackathon Expernet 2026
+# ACADEM'ÎLE - Hackathon Expernet 2026
 
 Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de formation selon les besoins, les objectifs et le rythme de chaque apprenant.
 
@@ -8,16 +8,16 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 | Nom | Rôle |
 | --- | ---- |
-| Marielle AGATHE | |
-| Anne LEBEAU | |
-| Nassim ALI MAHOMED | |
-| Jérôme CADERBY | |
-| Matthias CLAIN | |
-| Anthony DEGEILH | |
-| Lucas DIJOUX | |
-| Lucas JULIEN | |
-| Théo KASPROWICZ | |
-| Damien PAYET | |
+| Marielle AGATHE | Marketing Digital |
+| Anne LEBEAU | CDA |
+| Nassim ALI MAHOMED | Marketing Digital |
+| Jérôme CADERBY | ESD |
+| Matthias CLAIN | ASR |
+| Anthony DÉGEILH | CDA |
+| Lucas DIJOUX | ASR |
+| Lucas JULIEN | DPI |
+| Théo KASPROWICZ | ESD |
+| Damien PAYET | ASR |
 
 ## Stack technique
 
@@ -64,11 +64,65 @@ L'application est accessible sur https://localhost:8000.
 
 ### Flux de données
 
+#### Composants
+
+| Composant | Rôle |
+| --------- | ---- |
+| **Utilisateur** | Point d'entrée : connexion, navigation (questions / profil / leaderboard), demandes au chatbot |
+| **Front-End** | Interface web - affiche questions, leaderboard, réponses et informations utilisateur |
+| **Back-End** | Orchestrateur central - reçoit les actions utilisateur, pilote l'IA et persiste les données |
+| **IA** | Génère questions et modules, fournit les réponses textuelles du chatbot selon le niveau de l'utilisateur |
+| **Questions** | Module de gestion des questions - récupération et validation depuis le Back-End |
+| **Chatbot** | Interface conversationnelle - envoie les requêtes IA et récupère le niveau de l'utilisateur |
+| **Leaderboard** | Calcule et affiche le classement des apprenants |
+| **Base de données (MariaDB)** | Persistance : enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
+
+#### Flux principaux
+
+| Source | Destination | Données échangées |
+| ------ | ----------- | ----------------- |
+| Utilisateur | Front-End | Connexion, navigation (questions / profil / leaderboard), demandes au chatbot |
+| Front-End | Back-End | Réponses de l'utilisateur, informations user |
+| Back-End | Front-End | Questions, leaderboard, réponses, informations user |
+| Back-End | IA | Niveau de l'utilisateur, requête de génération |
+| IA | Questions | Création de questions et de modules |
+| IA | Chatbot | Réponse textuelle, niveau de l'utilisateur |
+| Chatbot | Back-End | Requête IA, niveau de l'utilisateur |
+| Questions | Back-End | Récupération et validation des questions |
+| Leaderboard | Back-End | Calcul du classement |
+| Back-End | Base de données | Enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
+
 ![alt text](ressources/Schema_Flux_Donnee.png)
 
 [(Voir le schéma sur Canva)](https://canva.link/caeq8t7qaa2wor0)
 
 ### Architecture réseau
+
+#### Couches de l'infrastructure
+
+| Couche | Composant | Détails |
+| ------ | --------- | ------- |
+| **Entrée** | Internet / Clients | VIP (IP flottante) |
+| **Pare-feu** | Pare-feu 1 - ACTIF | Nginx + UFW + TLS |
+| | Pare-feu 2 - PASSIF | Nginx + UFW + TLS (bascule VRRP) |
+| **Load balancing** | HAProxy 1 - ACTIF | Load balancing + health check |
+| | HAProxy 2 - PASSIF | Load balancing + health check (bascule VRRP) |
+| **Serveur physique 1** | Apache2 + PHP | Docker · port 80 |
+| | MariaDB Primary | Docker · port 3306 |
+| | rsync + cron | Backup SRV1 → Stockage A |
+| **Serveur physique 2** | Apache2 + PHP | Docker · replica web (sync rsync) |
+| | MariaDB Replica | Docker · lectures seules (sync binlog) |
+| | rsync + cron | Backup SRV2 → Stockage B |
+| **Stockage** | Stockage A | NAS / S3 site 1 |
+| | Stockage B | NAS / S3 site 2 |
+| **Supervision** | Centreon | Serveur dédié · SNMP + NRPE + alerting |
+
+#### Mécanismes de redondance
+
+- **VRRP** entre les deux pare-feux et les deux HAProxy pour la bascule automatique en cas de panne
+- **rsync** entre les deux serveurs physiques pour la synchronisation des fichiers web
+- **Réplication MariaDB** (binlog) du Primary vers le Replica en lecture seule
+- **Backups indépendants** par serveur vers des stockages distincts (Stockage A et B)
 
 ![Architecture réseau](ressources/architecture_reseau.png)
 
