@@ -23,6 +23,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 | Couche | Technologie |
 | ------ | ----------- |
+| Frontend | Twig + Tailwind CSS + Stimulus (Symfony UX) |
 | Backend | Symfony (PHP 8.2) |
 | Base de données | MySQL 8 |
 | IA | Mistral AI (`mistral-small-latest`) |
