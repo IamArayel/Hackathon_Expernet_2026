@@ -35,3 +35,6 @@ Repo du Hackathon Expernet 2026
 - Des messages de commit en français, respectant une convention claire et approuvée : https://www.conventionalcommits.org/fr/v1.0.0/#summary
 - **1 review obligatoire** avant de pouvoir merger sur la branche `main`
 - Une carte dans le Github Project complétée d'après le template fourni.
+
+## Schéma de flux de données du projet 
+https://canva.link/caeq8t7qaa2wor0
