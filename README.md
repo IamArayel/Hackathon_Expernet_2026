@@ -64,7 +64,9 @@ L'application est accessible sur https://localhost:8000.
 
 ### Flux de données
 
-[Voir le schéma sur Canva](https://canva.link/caeq8t7qaa2wor0)
+![alt text](ressources/Schema_Flux_Donnee.png)
+
+[(Voir le schéma sur Canva)](https://canva.link/caeq8t7qaa2wor0)
 
 ### Architecture réseau
 
@@ -99,5 +101,5 @@ docs: mettre à jour le README
 ### Règles de contribution
 
 - 1 carte GitHub Project = 1 branche = 1 Pull Request
-- **1 review obligatoire** avant tout merge sur `main`
+- **1 review obligatoire** avant tout merge sur `main` pour valider les modifications apportées
 - Carte GitHub Project complétée d'après le template fourni
