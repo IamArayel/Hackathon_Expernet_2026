@@ -39,6 +39,40 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 ## Installation
 
+> **Variables d'environnement** — le fichier `.env` n'est pas versionné (repo public).
+> Copier `.env.example` vers `.env` et renseigner les variables suivantes auprès du référent technique de l'équipe (canal privé) :
+>
+> | Variable | Description |
+> | -------- | ----------- |
+> | `APP_SECRET` | Clé secrète Symfony — générer avec `php bin/console secret:generate-tokens` |
+> | `DATABASE_URL` | Déjà configurée pour Docker ; à adapter en dev local |
+> | `MISTRAL_API_KEY` | Clé API Mistral — à demander au référent |
+
+### Via Docker (recommandé)
+
+```bash
+# 1. Cloner le dépôt
+git clone https://github.com/IAmArayel/Hackathon_Expernet_2026.git
+cd Hackathon_Expernet_2026
+
+# 2. Configurer l'environnement
+cp .env.example .env
+# Renseigner APP_SECRET et MISTRAL_API_KEY dans .env
+
+# 3. Démarrer les conteneurs
+docker compose up --build -d
+
+# 4. Installer les dépendances
+docker compose exec app composer install
+
+# 5. Initialiser la base de données
+docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+L'application est accessible sur <http://localhost:8080>.
+
+### En local (sans Docker)
+
 ```bash
 # 1. Cloner le dépôt
 git clone https://github.com/IAmArayel/Hackathon_Expernet_2026.git
@@ -48,15 +82,19 @@ cd Hackathon_Expernet_2026
 composer install
 
 # 3. Configurer l'environnement
-cp .env .env.local
-# Renseigner DATABASE_URL et MISTRAL_API_KEY dans .env.local
+cp .env.example .env
+# Adapter DATABASE_URL à votre MySQL local, renseigner APP_SECRET et MISTRAL_API_KEY
 
-# 4. Initialiser la base de données
+# 4. Générer un APP_SECRET
+php bin/console secret:generate-tokens
+
+# 5. Initialiser la base de données
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 
-# 5. Lancer le serveur
+# 6. Lancer le serveur
 symfony server:start
+php bin/console tailwind:build --watch
 ```
 
 L'application est accessible sur https://localhost:8000.
