@@ -6,7 +6,6 @@ use App\Entity\Question;
 use App\Entity\Score;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
-use App\Service\AIQuizService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,12 +15,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/question')]
 final class QuestionController extends AbstractController
 {
-    private AIQuizService $aiQuizService;
-    public function __construct(AIQuizService $aiQuizService)
-    {
-        $this->aiQuizService = $aiQuizService;
-    }
-
 
 
     #[Route(name: 'app_question_index', methods: ['GET'])]
