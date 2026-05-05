@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title %}Assistant IA — Academ'Île{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-indigo-700 mb-2">Assistant IA</h1>
+    <p class="text-gray-500 mb-6">Posez vos questions pédagogiques, votre assistant s'adapte à votre niveau.</p>
+
+    <div id="chat-messages"
+         class="bg-white rounded-xl shadow border border-gray-100 h-96 overflow-y-auto p-4 space-y-3 mb-4">
+        <div class="text-sm text-gray-400 text-center">Démarrez la conversation…</div>
+    </div>
+
+    <form id="chat-form" class="flex gap-3">
+        <input type="text" id="chat-input" placeholder="Votre question…" required
+               class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button type="submit"
+                class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition text-sm">
+            Envoyer
+        </button>
+    </form>
+</div>
+
+<script>
+const form = document.getElementById('chat-form');
+const input = document.getElementById('chat-input');
+const messages = document.getElementById('chat-messages');
+
+function addMessage(text, role) {
+    const div = document.createElement('div');
+    div.className = role === 'user'
+        ? 'text-right'
+        : 'text-left';
+    div.innerHTML = `<span class="inline-block px-4 py-2 rounded-xl text-sm max-w-xs break-words ${
+        role === 'user' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'
+    }">${text}</span>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    input.value = '';
+
+    try {
+        const res = await fetch('{{ path('chatbot_ask') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message }),
+        });
+        const data = await res.json();
+        addMessage(data.reply ?? data.error, 'bot');
+    } catch {
+        addMessage('Erreur de connexion au service IA.', 'bot');
+    }
+});
+</script>
+{% endblock %}
