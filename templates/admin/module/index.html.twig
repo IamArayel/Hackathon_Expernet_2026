@@ -1,0 +1,59 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modules — {{ formation.title }}{% endblock %}
+{% block page_title %}Modules de « {{ formation.title }} »{% endblock %}
+
+{% block body %}
+<div class="flex items-center gap-3 mb-4">
+    <a href="{{ path('admin_formation_index') }}" class="text-sm text-indigo-600 hover:underline">&larr; Formations</a>
+    <span class="text-gray-400">/</span>
+    <a href="{{ path('admin_formation_edit', {id: formation.id}) }}" class="text-sm text-indigo-600 hover:underline">{{ formation.title }}</a>
+    <div class="ml-auto">
+        <a href="{{ path('admin_module_new', {id: formation.id}) }}"
+           class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+            + Nouveau module
+        </a>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left">Pos.</th>
+                <th class="px-6 py-3 text-left">Titre</th>
+                <th class="px-6 py-3 text-left">Questions</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for module in formation.modules %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-3 text-gray-400 font-mono">{{ module.position }}</td>
+                <td class="px-6 py-3 font-medium">{{ module.title }}</td>
+                <td class="px-6 py-3 text-gray-500">{{ module.questions|length }}</td>
+                <td class="px-6 py-3 text-right flex justify-end gap-2">
+                    <a href="{{ path('admin_question_index', {formationId: formation.id, id: module.id}) }}"
+                       class="text-xs bg-gray-50 text-gray-600 px-3 py-1 rounded hover:bg-gray-100 transition">
+                        Questions
+                    </a>
+                    <a href="{{ path('admin_module_edit', {formationId: formation.id, id: module.id}) }}"
+                       class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100 transition">
+                        Éditer
+                    </a>
+                    <form method="post" action="{{ path('admin_module_delete', {formationId: formation.id, id: module.id}) }}"
+                          onsubmit="return confirm('Supprimer ce module et ses questions ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_module_' ~ module.id) }}">
+                        <button class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="px-6 py-4 text-gray-400 text-center">Aucun module — <a href="{{ path('admin_module_new', {id: formation.id}) }}" class="text-indigo-600 hover:underline">en ajouter un</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
