@@ -32,11 +32,21 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 ## Prérequis
 
-- PHP 8.4+
-- [Composer](https://getcomposer.org/)
-- [Symfony CLI](https://symfony.com/download)
-- MariaDB 11+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (inclut Docker Compose)
+- `make` — voir ci-dessous selon l'OS
 - Une clé API Mistral AI (gratuite sur [console.mistral.ai](https://console.mistral.ai))
+
+> **PHP, Composer et MariaDB ne sont pas requis en local** — tout s'exécute dans les conteneurs Docker.
+
+### Installer `make`
+
+| OS | Méthode |
+| -- | ------- |
+| **macOS** | Pré-installé avec Xcode CLT (`xcode-select --install`) |
+| **Linux** | `sudo apt install make` (Debian/Ubuntu) |
+| **Windows** | Utiliser **WSL 2** (recommandé) ou **Git Bash** + `choco install make` |
+
+> **Windows sans WSL** : les commandes `make` peuvent aussi être remplacées par leurs équivalents `docker compose` listés dans le [Makefile](Makefile).
 
 ## Installation
 
@@ -54,6 +64,8 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 ### Via Docker (recommandé)
 
+> **Windows** : lancer les commandes depuis **WSL 2** ou **Git Bash**, pas depuis PowerShell/CMD.
+
 ```bash
 # 1. Cloner le dépôt
 git clone https://github.com/IAmArayel/Hackathon_Expernet_2026.git
@@ -61,23 +73,28 @@ cd Hackathon_Expernet_2026
 
 # 2. Configurer l'environnement
 cp .env.example .env
-# Renseigner APP_SECRET et MISTRAL_API_KEY dans .env
+# Renseigner toutes les variables dans .env
 
-# 3. Démarrer les conteneurs
-docker compose up --build -d
+# 3. Installation complète en une commande
+make install
 
-# 4. Installer les dépendances
-docker compose exec app composer install
-
-# 5. Initialiser la base de données
-docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-
-# 6. (Optionnel) Charger les données de développement
-docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
-
-# 7. Compiler les assets Tailwind
-docker compose exec app php bin/console tailwind:build
+# (Optionnel) Charger les données de développement
+make fixtures
 ```
+
+| Commande | Description |
+| -------- | ----------- |
+| `make start` | Démarrer les conteneurs |
+| `make stop` | Arrêter les conteneurs |
+| `make reset` | Tout supprimer et reconstruire (**⚠ efface la BDD**) |
+| `make migrate` | Appliquer les migrations |
+| `make fixtures` | Charger les données de dev (**⚠ vide la BDD**) |
+| `make tailwind` | Compiler les assets Tailwind |
+| `make cc` | Vider le cache Symfony |
+| `make sh` | Shell dans le conteneur PHP |
+| `make db-sh` | Shell MariaDB |
+| `make logs` | Logs en temps réel |
+| `make help` | Lister toutes les commandes |
 
 L'application est accessible sur <http://localhost:8080>.
 Documentation API (Swagger) : <http://localhost:8080/api/doc>
@@ -94,7 +111,7 @@ composer install
 
 # 3. Configurer l'environnement
 cp .env.example .env
-# Adapter DATABASE_URL à votre MariaDB local (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
+# Adapter DATABASE_URL (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
 
 # 4. Générer un APP_SECRET
 php bin/console secret:generate-tokens
