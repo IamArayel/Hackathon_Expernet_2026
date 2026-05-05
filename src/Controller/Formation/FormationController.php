@@ -3,8 +3,10 @@
 namespace App\Controller\Formation;
 
 use App\Entity\Formation;
+use App\Entity\Module;
 use App\Entity\UserProgress;
 use App\Repository\FormationRepository;
+use App\Repository\ModuleRepository;
 use App\Repository\UserProgressRepository;
 use App\Service\GamificationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/formations', name: 'formation_')]
 class FormationController extends AbstractController
@@ -74,6 +77,108 @@ class FormationController extends AbstractController
             $em->flush();
         }
 
+        return $this->redirectToRoute('formation_module_show', [
+            'id'       => $formation->getId(),
+            'moduleId' => $firstModule->getId(),
+        ]);
+    }
+
+    #[Route('/{id}/module/{moduleId}', name: 'module_show', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function moduleShow(
+        Formation $formation,
+        int $moduleId,
+        ModuleRepository $moduleRepository,
+        UserProgressRepository $progressRepository,
+    ): Response {
+        $module = $moduleRepository->find($moduleId);
+        if (!$module || $module->getFormation() !== $formation) {
+            throw $this->createNotFoundException('Module introuvable.');
+        }
+
+        $user = $this->getUser();
+
+        $allModules = $formation->getModules()->toArray();
+        usort($allModules, fn(Module $a, Module $b) => $a->getPosition() <=> $b->getPosition());
+
+        $currentIndex = array_search($module, $allModules, true);
+        $prevModule   = $currentIndex > 0 ? $allModules[$currentIndex - 1] : null;
+        $nextModule   = $currentIndex < count($allModules) - 1 ? $allModules[$currentIndex + 1] : null;
+
+        $progress = $progressRepository->findOneBy(['user' => $user, 'module' => $module]);
+
+        return $this->render('formation/module.html.twig', [
+            'formation'   => $formation,
+            'module'      => $module,
+            'progress'    => $progress,
+            'prevModule'  => $prevModule,
+            'nextModule'  => $nextModule,
+        ]);
+    }
+
+    #[Route('/{id}/module/{moduleId}/submit', name: 'module_submit', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function moduleSubmit(
+        Formation $formation,
+        int $moduleId,
+        Request $request,
+        ModuleRepository $moduleRepository,
+        UserProgressRepository $progressRepository,
+        EntityManagerInterface $em,
+        GamificationService $gamification,
+    ): Response {
+        $module = $moduleRepository->find($moduleId);
+        if (!$module || $module->getFormation() !== $formation) {
+            throw $this->createNotFoundException('Module introuvable.');
+        }
+
+        $user = $this->getUser();
+
+        $questions = $module->getQuestions()->toArray();
+        $total     = count($questions);
+        $correct   = 0;
+
+        foreach ($questions as $question) {
+            $submitted = $request->request->get('question_' . $question->getId(), '');
+            if ($submitted === $question->getCorrectAnswer()) {
+                $correct++;
+            }
+        }
+
+        $score = $total > 0 ? (int) round(($correct / $total) * 100) : 100;
+
+        $progress = $progressRepository->findOneBy(['user' => $user, 'module' => $module])
+            ?? (new UserProgress())->setUser($user)->setModule($module);
+
+        if (!$progress->isCompleted()) {
+            $progress->setScore($score)->setCompleted(true);
+            $em->persist($progress);
+            $xpGained = $gamification->rewardModuleCompletion($user, $module, $score);
+            $em->flush();
+            $this->addFlash('success', sprintf('Module complété ! Vous avez obtenu %d%% et gagné %d XP.', $score, $xpGained));
+        } else {
+            $this->addFlash('info', 'Vous avez déjà complété ce module.');
+        }
+
+        $allModules = $formation->getModules()->toArray();
+        usort($allModules, fn(Module $a, Module $b) => $a->getPosition() <=> $b->getPosition());
+        $currentIndex = array_search($module, $allModules, true);
+        $nextModule   = $currentIndex < count($allModules) - 1 ? $allModules[$currentIndex + 1] : null;
+
+        if ($nextModule) {
+            $nextProgress = $progressRepository->findOneBy(['user' => $user, 'module' => $nextModule]);
+            if (!$nextProgress) {
+                $np = (new UserProgress())->setUser($user)->setModule($nextModule);
+                $em->persist($np);
+                $em->flush();
+            }
+            return $this->redirectToRoute('formation_module_show', [
+                'id'       => $formation->getId(),
+                'moduleId' => $nextModule->getId(),
+            ]);
+        }
+
+        $this->addFlash('success', 'Félicitations ! Vous avez terminé la formation.');
         return $this->redirectToRoute('formation_show', ['id' => $formation->getId()]);
     }
 
