@@ -99,6 +99,12 @@ make fixtures
 L'application est accessible sur <http://localhost:8080>.
 Documentation API (Swagger) : <http://localhost:8080/api/doc>
 
+#### Comptes de test (après `make fixtures`)
+
+| Rôle | Email | Identifiant | Mot de passe |
+| ---- | ----- | ----------- | ------------ |
+| Utilisateur | `test@test.com` | `testeur` | `azerty03` |
+
 ### En local (sans Docker)
 
 ```bash
