@@ -32,8 +32,8 @@ class RegistrationFormType extends AbstractType
                 'first_options' => ['label' => 'Mot de passe', 'attr' => ['placeholder' => '••••••••']],
                 'second_options' => ['label' => 'Confirmer le mot de passe', 'attr' => ['placeholder' => '••••••••']],
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer un mot de passe.']),
-                    new Length(['min' => 8, 'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères.']),
+                    new NotBlank(message: 'Veuillez entrer un mot de passe.'),
+                    new Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.'),
                 ],
             ]);
     }
