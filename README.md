@@ -61,23 +61,28 @@ cd Hackathon_Expernet_2026
 
 # 2. Configurer l'environnement
 cp .env.example .env
-# Renseigner APP_SECRET et MISTRAL_API_KEY dans .env
+# Renseigner toutes les variables dans .env
 
-# 3. Démarrer les conteneurs
-docker compose up --build -d
+# 3. Installation complète en une commande
+make install
 
-# 4. Installer les dépendances
-docker compose exec app composer install
-
-# 5. Initialiser la base de données
-docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-
-# 6. (Optionnel) Charger les données de développement
-docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
-
-# 7. Compiler les assets Tailwind
-docker compose exec app php bin/console tailwind:build
+# (Optionnel) Charger les données de développement
+make fixtures
 ```
+
+| Commande | Description |
+| -------- | ----------- |
+| `make start` | Démarrer les conteneurs |
+| `make stop` | Arrêter les conteneurs |
+| `make reset` | Tout supprimer et reconstruire (**⚠ efface la BDD**) |
+| `make migrate` | Appliquer les migrations |
+| `make fixtures` | Charger les données de dev (**⚠ vide la BDD**) |
+| `make tailwind` | Compiler les assets Tailwind |
+| `make cc` | Vider le cache Symfony |
+| `make sh` | Shell dans le conteneur PHP |
+| `make db-sh` | Shell MariaDB |
+| `make logs` | Logs en temps réel |
+| `make help` | Lister toutes les commandes |
 
 L'application est accessible sur <http://localhost:8080>.
 Documentation API (Swagger) : <http://localhost:8080/api/doc>
@@ -94,7 +99,7 @@ composer install
 
 # 3. Configurer l'environnement
 cp .env.example .env
-# Adapter DATABASE_URL à votre MariaDB local (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
+# Adapter DATABASE_URL (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
 
 # 4. Générer un APP_SECRET
 php bin/console secret:generate-tokens
