@@ -100,58 +100,62 @@ final class ChatController extends AbstractController
         ]);
     }
 
-    #[Route('/quiz/generate', name: 'app_quiz_generate', methods: ['POST'])]
+    #[Route('/quiz/generate', name: 'app_quiz_generate', methods: ['POST', 'GET'])]
     public function generate(
         Request $request,
         EntityManagerInterface $em,
         ScoreRepository $scoreRepo,
         #[Target('quiz_generator')] AgentInterface $quizAgent
     ): Response {
-        $theme = $request->request->get('theme', 'Culture Générale');
-
-        // On récupère le niveau de l'utilisateur via son Score
+        // 1. On cherche le score de l'utilisateur
         $scoreEntity = $scoreRepo->findOneBy(['utilisateur' => $this->getUser()]);
-        $score = $scoreEntity ? $scoreEntity->getScore() : 0;
 
-        // Prompt court et direct
-        $prompt = sprintf(
-            "Génère 5 questions sur le thème '%s'. Niveau de difficulté basé sur un score de %d. Format JSON uniquement.",
-            $theme,
-            $score
-        );
-
-        // 1. On crée le sac de messages vide
-        $messageBag = new MessageBag();
-
-        // 2. On crée le message utilisateur
-        $userMessage = new UserMessage(new Text($prompt));
-
-        // 3. On l'ajoute via la méthode add() (qui accepte le type MessageInterface)
-        $messageBag->add($userMessage);
-
-        // 4. On passe l'objet MessageBag complet au call
-        $result = $quizAgent->call($messageBag);
-        $content = (string) $result->getContent();
-
-        // On décode le JSON
-        $data = json_decode(preg_replace('/```json|```/', '', $content), true);
-
-        if (!$data) {
-            return $this->json(['error' => 'Échec génération IA'], 500);
+        // 2. Détermination du contexte (Premier test ou adaptation)
+        if (!$scoreEntity) {
+            // CAS 1 : Premier arrivant
+            $theme = "Culture Générale et Logique";
+            $instructionDifficulté = "C'est un test de positionnement. Génère des questions de niveaux variés (facile à moyen) pour évaluer l'utilisateur.";
+        } else {
+            // CAS 2 : Utilisateur connu
+            $theme = $request->request->get('theme', 'Informatique'); // Thème dynamique ou par défaut
+            $currentScore = $scoreEntity->getScore();
+            $instructionDifficulté = sprintf(
+                "L'utilisateur a un score de %d. Adapte la difficulté : si le score est > 100, propose des questions complexes. Si < 50, reste sur des bases.",
+                $currentScore
+            );
         }
 
-        // Sauvegarde en BDD (Question2)
+        $prompt = sprintf(
+            "Thème : %s. %s. Génère 5 questions au format JSON : [{\"question\": \"...\", \"reponses\": [\"...\"], \"correct\": 0}]. Ne parle pas, réponds juste le JSON.",
+            $theme,
+            $instructionDifficulté
+        );
+
+        // 3. Appel de l'IA avec le MessageBag (Correction pour ton erreur de type)
+        $messageBag = new MessageBag();
+        $messageBag->add(new UserMessage(new Text($prompt)));
+        $result = $quizAgent->call($messageBag);
+
+        $content = (string) $result->getContent();
+        $data = json_decode(preg_replace('/```json|
+```/', '', $content), true);
+
+        if (!$data) return $this->json(['error' => 'IA Error'], 500);
+
+        // 4. Enregistrement des questions pour cette session
         foreach ($data as $item) {
             $q = new Question2();
             $q->setIntitule($item['question']);
             $q->setChoix($item['reponses']);
             $q->setIndexCorrect($item['correct']);
-            // On pourrait ajouter $q->setUtilisateur($this->getUser());
+            // On lie éventuellement à l'utilisateur ici
             $em->persist($q);
         }
-
         $em->flush();
 
-        return $this->json($data);
+        return $this->json([
+            'isFirstTime' => !$scoreEntity,
+            'questions' => $data
+        ]);
     }
 }

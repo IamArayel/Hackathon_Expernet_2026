@@ -6,6 +6,7 @@ use App\Entity\Question;
 use App\Entity\Score;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
+use App\Repository\ScoreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,5 +93,39 @@ final class QuestionController extends AbstractController
         }
 
         return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/quiz/submit-score', name: 'app_quiz_score_update', methods: ['POST'])]
+public function updateScore(
+    Request $request, 
+    ScoreRepository $scoreRepo, 
+    EntityManagerInterface $em
+): Response {
+    $pointsGagnes = (int) $request->request->get('points'); // Calculé en JS ou ici
+    $utilisateur = $this->getUser();
+
+    $scoreEntity = $scoreRepo->findOneBy(['utilisateur' => $utilisateur]);
+
+    if (!$scoreEntity) {
+        // Création du premier score
+        $scoreEntity = new Score();
+        $scoreEntity->setUtilisateur($utilisateur);
+        $scoreEntity->setCreatedAt(new \DateTimeImmutable());
+        $scoreEntity->setScore($pointsGagnes);
+        $em->persist($scoreEntity);
+    } else {
+        // Mise à jour
+        $scoreEntity->setScore($scoreEntity->getScore() + $pointsGagnes);
+    }
+
+    $em->flush();
+    return $this->json(['status' => 'success', 'newTotal' => $scoreEntity->getScore()]);
+}
+
+    #[Route('/test/question', name: 'test')]
+    public function test(): Response
+    {
+    // Cette page ne fait rien d'autre qu'afficher le squelette HTML/JS
+    return $this->render('question/test.html.twig');
     }
 }
