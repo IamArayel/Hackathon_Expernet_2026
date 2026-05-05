@@ -4,46 +4,53 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block body %}
+{# ——— Stats cards ——— #}
 <div class="grid grid-cols-3 gap-4 mb-8">
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <div class="text-3xl font-bold text-indigo-600">{{ stats.users }}</div>
-        <div class="text-sm text-gray-500 mt-1">Utilisateurs inscrits</div>
+    <div class="card-volcanic rounded-2xl p-6">
+        <div class="text-3xl font-extrabold text-lava" style="font-family:'Poppins',sans-serif">{{ stats.users }}</div>
+        <div class="text-sm text-gray-600 mt-1">Utilisateurs inscrits</div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <div class="text-3xl font-bold text-indigo-600">{{ stats.formations }}</div>
-        <div class="text-sm text-gray-500 mt-1">Formations disponibles</div>
+    <div class="card-volcanic rounded-2xl p-6">
+        <div class="text-3xl font-extrabold text-lava" style="font-family:'Poppins',sans-serif">{{ stats.formations }}</div>
+        <div class="text-sm text-gray-600 mt-1">Formations disponibles</div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <div class="text-3xl font-bold text-indigo-600">{{ stats.completions }}</div>
-        <div class="text-sm text-gray-500 mt-1">Modules complétés</div>
+    <div class="card-volcanic rounded-2xl p-6">
+        <div class="text-3xl font-extrabold text-lava" style="font-family:'Poppins',sans-serif">{{ stats.completions }}</div>
+        <div class="text-sm text-gray-600 mt-1">Modules complétés</div>
     </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100">
-    <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="font-semibold text-gray-900">Top 5 du classement</h2>
+{# ——— Top 5 table ——— #}
+<div class="card-volcanic rounded-2xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-cinder flex items-center justify-between">
+        <h2 class="font-bold text-white" style="font-family:'Poppins',sans-serif">Top 5 du classement</h2>
+        <span class="text-lg">🏆</span>
     </div>
     <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr>
-                <th class="px-6 py-3 text-left">#</th>
-                <th class="px-6 py-3 text-left">Utilisateur</th>
-                <th class="px-6 py-3 text-left">Niveau</th>
-                <th class="px-6 py-3 text-left">XP</th>
+        <thead>
+            <tr class="border-b border-smoke">
+                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-600">#</th>
+                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Utilisateur</th>
+                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Niveau</th>
+                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-600">XP</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-50">
+        <tbody class="divide-y divide-smoke">
             {% for user in top_users %}
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-3 font-medium text-gray-500">{{ loop.index }}</td>
-                <td class="px-6 py-3 font-medium">{{ user.username }}</td>
+            <tr class="hover:bg-smoke transition">
+                <td class="px-6 py-3 text-gray-600 font-mono">{{ loop.index }}</td>
+                <td class="px-6 py-3 font-medium text-gray-200">{{ user.username }}</td>
                 <td class="px-6 py-3">
-                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">Niv. {{ user.level }}</span>
+                    <span class="bg-lava/10 text-lava border border-lava/25 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+                        Niv. {{ user.level }}
+                    </span>
                 </td>
-                <td class="px-6 py-3 text-indigo-600 font-semibold">{{ user.xp }} XP</td>
+                <td class="px-6 py-3 text-lava font-bold">{{ user.xp }} XP</td>
             </tr>
             {% else %}
-            <tr><td colspan="4" class="px-6 py-4 text-gray-400 text-center">Aucun utilisateur</td></tr>
+            <tr>
+                <td colspan="4" class="px-6 py-10 text-gray-600 text-center">Aucun utilisateur</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

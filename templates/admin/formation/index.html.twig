@@ -4,59 +4,66 @@
 {% block page_title %}Formations{% endblock %}
 
 {% block body %}
-<div class="flex justify-end mb-4">
+<div class="flex justify-end mb-5">
     <a href="{{ path('admin_formation_new') }}"
-       class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+       class="bg-lava text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#d44d1b] transition lava-glow-sm"
+       style="font-family:'Poppins',sans-serif">
         + Nouvelle formation
     </a>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="card-volcanic rounded-2xl overflow-hidden">
     <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr>
-                <th class="px-6 py-3 text-left">Titre</th>
-                <th class="px-6 py-3 text-left">Catégorie</th>
-                <th class="px-6 py-3 text-left">Difficulté</th>
-                <th class="px-6 py-3 text-left">Modules</th>
-                <th class="px-6 py-3 text-left">Créée le</th>
-                <th class="px-6 py-3 text-right">Actions</th>
+        <thead>
+            <tr class="border-b border-cinder">
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Titre</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Catégorie</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Difficulté</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Modules</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Créée le</th>
+                <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-widest text-gray-600">Actions</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-smoke">
             {% set difficulty_labels = {beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé'} %}
-            {% set difficulty_colors = {beginner: 'bg-green-100 text-green-700', intermediate: 'bg-yellow-100 text-yellow-700', advanced: 'bg-red-100 text-red-700'} %}
             {% for formation in formations %}
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-3 font-medium">{{ formation.title }}</td>
-                <td class="px-6 py-3 text-gray-500">{{ formation.category ?: '—' }}</td>
+            <tr class="hover:bg-smoke transition">
+                <td class="px-6 py-3 font-medium text-gray-200">{{ formation.title }}</td>
+                <td class="px-6 py-3 text-gray-600">{{ formation.category ?: '—' }}</td>
                 <td class="px-6 py-3">
-                    <span class="text-xs px-2 py-0.5 rounded-full {{ difficulty_colors[formation.difficulty] ?? '' }}">
+                    <span class="text-xs px-2.5 py-1 rounded-full font-semibold
+                        {% if formation.difficulty == 'beginner' %}text-green-400 bg-green-400/10
+                        {% elseif formation.difficulty == 'intermediate' %}text-yellow-400 bg-yellow-400/10
+                        {% else %}text-red-400 bg-red-400/10{% endif %}">
                         {{ difficulty_labels[formation.difficulty] ?? formation.difficulty }}
                     </span>
                 </td>
                 <td class="px-6 py-3 text-gray-500">{{ formation.modules|length }}</td>
-                <td class="px-6 py-3 text-gray-500">{{ formation.createdAt|date('d/m/Y') }}</td>
-                <td class="px-6 py-3 text-right flex justify-end gap-2 flex-wrap">
-                    <a href="{{ path('admin_module_index', {id: formation.id}) }}"
-                       class="text-xs bg-gray-50 text-gray-600 px-3 py-1 rounded hover:bg-gray-100 transition">
-                        Modules
-                    </a>
-                    <a href="{{ path('admin_formation_edit', {id: formation.id}) }}"
-                       class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100 transition">
-                        Éditer
-                    </a>
-                    <form method="post" action="{{ path('admin_formation_delete', {id: formation.id}) }}"
-                          onsubmit="return confirm('Supprimer « {{ formation.title }} » et tous ses modules ?')">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete_formation_' ~ formation.id) }}">
-                        <button class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition">
-                            Supprimer
-                        </button>
-                    </form>
+                <td class="px-6 py-3 text-gray-600">{{ formation.createdAt|date('d/m/Y') }}</td>
+                <td class="px-6 py-3 text-right">
+                    <div class="flex justify-end gap-2">
+                        <a href="{{ path('admin_module_index', {id: formation.id}) }}"
+                           class="text-xs bg-smoke text-gray-400 border border-cinder px-3 py-1.5 rounded-lg hover:text-lava hover:border-lava/40 transition">
+                            Modules
+                        </a>
+                        <a href="{{ path('admin_formation_edit', {id: formation.id}) }}"
+                           class="text-xs bg-lava/10 text-lava border border-lava/25 px-3 py-1.5 rounded-lg hover:bg-lava/20 transition">
+                            Éditer
+                        </a>
+                        <form method="post" action="{{ path('admin_formation_delete', {id: formation.id}) }}"
+                              onsubmit="return confirm('Supprimer « {{ formation.title }} » et tous ses modules ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_formation_' ~ formation.id) }}">
+                            <button class="text-xs bg-red-900/20 text-red-400 border border-red-800/40 px-3 py-1.5 rounded-lg hover:bg-red-900/40 transition">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% else %}
-            <tr><td colspan="6" class="px-6 py-4 text-gray-400 text-center">Aucune formation</td></tr>
+            <tr>
+                <td colspan="6" class="px-6 py-12 text-gray-600 text-center">Aucune formation</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

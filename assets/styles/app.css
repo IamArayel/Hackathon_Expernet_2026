@@ -1,5 +1,142 @@
 @import "tailwindcss";
 
+@theme {
+    --color-lava: #f15a22;
+    --color-ember: #ff8a50;
+    --color-ash: #111111;
+    --color-smoke: #1a1a1a;
+    --color-cinder: #222222;
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+/* ——— Base ——— */
 body {
-    background-color: skyblue;
+    background-color: #0a0a0a;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ——— Lava glow ——— */
+.lava-glow {
+    box-shadow: 0 0 22px rgba(241, 90, 34, 0.42);
+}
+.lava-glow-sm {
+    box-shadow: 0 0 12px rgba(241, 90, 34, 0.3);
+}
+
+/* ——— Hero radial ——— */
+.hero-volcanic {
+    background:
+        radial-gradient(ellipse at 50% 110%, rgba(241, 90, 34, 0.25) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a0a 0%, #160805 100%);
+}
+
+/* ——— Card ——— */
+.card-volcanic {
+    background: #111;
+    border: 1px solid #222;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.card-volcanic:hover {
+    box-shadow: 0 0 22px rgba(241, 90, 34, 0.22);
+    border-color: rgba(241, 90, 34, 0.55);
+    transform: translateY(-2px);
+}
+
+/* ——— Divider ——— */
+.divider-lava {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(241, 90, 34, 0.5), transparent);
+    border: none;
+}
+
+/* ——— Form inputs ——— */
+.input-volcanic {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    color: #f0f0f0;
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    width: 100%;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.input-volcanic:focus {
+    border-color: #f15a22;
+    box-shadow: 0 0 0 3px rgba(241, 90, 34, 0.15);
+}
+.input-volcanic::placeholder {
+    color: #444;
+}
+
+/* ——— Scrollbar ——— */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #f15a22; }
+
+/* ——— Quiz radio labels ——— */
+.radio-volcanic {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #2a2a2a;
+    background: #111;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.radio-volcanic:hover {
+    background: rgba(241, 90, 34, 0.08);
+    border-color: rgba(241, 90, 34, 0.4);
+}
+.radio-volcanic input[type="radio"] {
+    accent-color: #f15a22;
+}
+
+/* ——— Chat bubbles ——— */
+.bubble-user {
+    background: #f15a22;
+    color: white;
+    border-radius: 1rem 1rem 0.25rem 1rem;
+}
+.bubble-bot {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #2a2a2a;
+    border-radius: 1rem 1rem 1rem 0.25rem;
+}
+
+/* ——— Progress bar ——— */
+.progress-lava {
+    background: linear-gradient(90deg, #f15a22, #ff8a50);
+    box-shadow: 0 0 8px rgba(241, 90, 34, 0.45);
+}
+
+/* ——— Symfony form widget override ——— */
+.symfony-form-field input,
+.symfony-form-field select,
+.symfony-form-field textarea {
+    background: #111 !important;
+    border: 1px solid #2a2a2a !important;
+    color: #f0f0f0 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.625rem 0.875rem !important;
+    width: 100% !important;
+    font-size: 0.875rem !important;
+    font-family: 'Montserrat', sans-serif !important;
+    outline: none !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+.symfony-form-field input:focus,
+.symfony-form-field select:focus,
+.symfony-form-field textarea:focus {
+    border-color: #f15a22 !important;
+    box-shadow: 0 0 0 3px rgba(241, 90, 34, 0.15) !important;
 }
