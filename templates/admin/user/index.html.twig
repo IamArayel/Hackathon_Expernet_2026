@@ -4,56 +4,62 @@
 {% block page_title %}Utilisateurs{% endblock %}
 
 {% block body %}
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-        <span class="text-sm text-gray-500">{{ users|length }} utilisateur(s)</span>
+<div class="card-volcanic rounded-2xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-cinder flex items-center justify-between">
+        <span class="text-sm text-gray-600">{{ users|length }} utilisateur(s)</span>
     </div>
     <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr>
-                <th class="px-6 py-3 text-left">Utilisateur</th>
-                <th class="px-6 py-3 text-left">Email</th>
-                <th class="px-6 py-3 text-left">Rôles</th>
-                <th class="px-6 py-3 text-left">Niveau / XP</th>
-                <th class="px-6 py-3 text-left">Inscrit le</th>
-                <th class="px-6 py-3 text-right">Actions</th>
+        <thead>
+            <tr class="border-b border-smoke">
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Utilisateur</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Email</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Rôles</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Niveau / XP</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Inscrit le</th>
+                <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-widest text-gray-600">Actions</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-smoke">
             {% for user in users %}
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-3 font-medium">{{ user.username }}</td>
-                <td class="px-6 py-3 text-gray-600">{{ user.email }}</td>
+            <tr class="hover:bg-smoke transition">
+                <td class="px-6 py-3 font-medium text-gray-200">{{ user.username }}</td>
+                <td class="px-6 py-3 text-gray-500">{{ user.email }}</td>
                 <td class="px-6 py-3">
                     {% for role in user.roles %}
                         {% if role != 'ROLE_USER' %}
-                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">{{ role }}</span>
+                            <span class="bg-lava/10 text-lava border border-lava/25 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+                                {{ role }}
+                            </span>
                         {% endif %}
                     {% endfor %}
                 </td>
                 <td class="px-6 py-3">
-                    <span class="text-indigo-600 font-semibold">Niv. {{ user.level }}</span>
-                    <span class="text-gray-400 ml-1">— {{ user.xp }} XP</span>
+                    <span class="text-lava font-bold">Niv. {{ user.level }}</span>
+                    <span class="text-gray-600 ml-1">— {{ user.xp }} XP</span>
                 </td>
-                <td class="px-6 py-3 text-gray-500">{{ user.createdAt|date('d/m/Y') }}</td>
-                <td class="px-6 py-3 text-right flex justify-end gap-2">
-                    <a href="{{ path('admin_user_edit', {id: user.id}) }}"
-                       class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100 transition">
-                        Éditer
-                    </a>
-                    {% if user != app.user %}
-                    <form method="post" action="{{ path('admin_user_delete', {id: user.id}) }}"
-                          onsubmit="return confirm('Supprimer {{ user.username }} ?')">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                        <button class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition">
-                            Supprimer
-                        </button>
-                    </form>
-                    {% endif %}
+                <td class="px-6 py-3 text-gray-600">{{ user.createdAt|date('d/m/Y') }}</td>
+                <td class="px-6 py-3 text-right">
+                    <div class="flex justify-end gap-2">
+                        <a href="{{ path('admin_user_edit', {id: user.id}) }}"
+                           class="text-xs bg-lava/10 text-lava border border-lava/25 px-3 py-1.5 rounded-lg hover:bg-lava/20 transition">
+                            Éditer
+                        </a>
+                        {% if user != app.user %}
+                        <form method="post" action="{{ path('admin_user_delete', {id: user.id}) }}"
+                              onsubmit="return confirm('Supprimer {{ user.username }} ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                            <button class="text-xs bg-red-900/20 text-red-400 border border-red-800/40 px-3 py-1.5 rounded-lg hover:bg-red-900/40 transition">
+                                Supprimer
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
                 </td>
             </tr>
             {% else %}
-            <tr><td colspan="6" class="px-6 py-4 text-gray-400 text-center">Aucun utilisateur</td></tr>
+            <tr>
+                <td colspan="6" class="px-6 py-12 text-gray-600 text-center">Aucun utilisateur</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

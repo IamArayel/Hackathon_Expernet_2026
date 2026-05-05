@@ -4,55 +4,59 @@
 {% block page_title %}Gestion du classement{% endblock %}
 
 {% block body %}
-<div class="flex justify-end mb-4">
+<div class="flex justify-end mb-5">
     <form method="post" action="{{ path('admin_leaderboard_reset_all') }}"
           onsubmit="return confirm('Remettre TOUS les XP, niveaux et séries à zéro ? Cette action est irréversible.')">
         <input type="hidden" name="_token" value="{{ csrf_token('reset_all_xp') }}">
-        <button class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition">
+        <button class="bg-red-900/30 text-red-400 border border-red-800/50 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-900/50 transition">
             Réinitialiser tout le classement
         </button>
     </form>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="card-volcanic rounded-2xl overflow-hidden">
     <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr>
-                <th class="px-6 py-3 text-left">#</th>
-                <th class="px-6 py-3 text-left">Utilisateur</th>
-                <th class="px-6 py-3 text-left">Niveau</th>
-                <th class="px-6 py-3 text-left">XP</th>
-                <th class="px-6 py-3 text-left">Série</th>
-                <th class="px-6 py-3 text-right">Réinitialiser</th>
+        <thead>
+            <tr class="border-b border-cinder">
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">#</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Utilisateur</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Niveau</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">XP</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-widest text-gray-600">Série</th>
+                <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-widest text-gray-600">Réinitialiser</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-smoke">
             {% for user in users %}
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-3 text-gray-400 font-mono">{{ loop.index }}</td>
-                <td class="px-6 py-3 font-medium">
+            <tr class="hover:bg-smoke transition">
+                <td class="px-6 py-3 text-gray-600 font-mono">{{ loop.index }}</td>
+                <td class="px-6 py-3 font-medium text-gray-200">
                     {{ user.username }}
                     {% if 'ROLE_ADMIN' in user.roles %}
-                        <span class="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded ml-1">admin</span>
+                        <span class="text-xs bg-lava/10 text-lava border border-lava/25 px-1.5 py-0.5 rounded ml-1 font-semibold">admin</span>
                     {% endif %}
                 </td>
                 <td class="px-6 py-3">
-                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">Niv. {{ user.level }}</span>
+                    <span class="bg-lava/10 text-lava border border-lava/25 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+                        Niv. {{ user.level }}
+                    </span>
                 </td>
-                <td class="px-6 py-3 text-indigo-600 font-semibold">{{ user.xp }}</td>
+                <td class="px-6 py-3 text-lava font-bold">{{ user.xp }}</td>
                 <td class="px-6 py-3 text-gray-500">{{ user.streak }} j.</td>
                 <td class="px-6 py-3 text-right">
                     <form method="post" action="{{ path('admin_leaderboard_reset_user', {id: user.id}) }}"
                           onsubmit="return confirm('Remettre les XP de {{ user.username }} à zéro ?')">
                         <input type="hidden" name="_token" value="{{ csrf_token('reset_user_' ~ user.id) }}">
-                        <button class="text-xs bg-orange-50 text-orange-600 px-3 py-1 rounded hover:bg-orange-100 transition">
+                        <button class="text-xs bg-lava/10 text-lava border border-lava/25 px-3 py-1.5 rounded-lg hover:bg-lava/20 transition">
                             Reset XP
                         </button>
                     </form>
                 </td>
             </tr>
             {% else %}
-            <tr><td colspan="6" class="px-6 py-4 text-gray-400 text-center">Aucun utilisateur</td></tr>
+            <tr>
+                <td colspan="6" class="px-6 py-12 text-gray-600 text-center">Aucun utilisateur</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

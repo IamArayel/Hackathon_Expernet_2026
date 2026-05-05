@@ -5,42 +5,44 @@
 
 {% block body %}
 <div class="max-w-2xl">
-    <p class="text-sm text-gray-500 mb-6">
+    <p class="text-sm text-gray-600 mb-6">
         Ces paramètres surchargent les variables d'environnement. Laisser un champ vide revient à utiliser la valeur par défaut.
     </p>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        {{ form_start(form, {attr: {class: 'space-y-5'}}) }}
+    <div class="card-volcanic rounded-2xl p-7">
+        {{ form_start(form, {attr: {class: 'space-y-6'}}) }}
 
-        <div>
-            {{ form_label(form.api_key, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-            {{ form_widget(form.api_key, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500'}}) }}
-            <p class="text-xs text-gray-400 mt-1">
-                Si vide, la variable d'environnement <code class="bg-gray-100 px-1 rounded">MISTRAL_API_KEY</code> est utilisée.
+        <div class="symfony-form-field">
+            {{ form_label(form.api_key, null, {label_attr: {class: 'block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2'}}) }}
+            {{ form_widget(form.api_key) }}
+            <p class="text-xs text-gray-600 mt-2">
+                Si vide, la variable d'environnement <code class="bg-smoke border border-cinder text-lava px-1.5 py-0.5 rounded text-xs font-mono">NVIDIA_API_KEY</code> est utilisée.
             </p>
             {{ form_errors(form.api_key) }}
         </div>
 
-        <div>
-            {{ form_label(form.model, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-            {{ form_widget(form.model, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500'}}) }}
+        <div class="symfony-form-field">
+            {{ form_label(form.model, null, {label_attr: {class: 'block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2'}}) }}
+            {{ form_widget(form.model) }}
             {{ form_errors(form.model) }}
         </div>
 
-        <div>
-            {{ form_label(form.system_prompt, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-            {{ form_widget(form.system_prompt, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono'}}) }}
-            <p class="text-xs text-gray-400 mt-1">
+        <div class="symfony-form-field">
+            {{ form_label(form.system_prompt, null, {label_attr: {class: 'block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2'}}) }}
+            {{ form_widget(form.system_prompt) }}
+            <p class="text-xs text-gray-600 mt-2">
                 Personnalisez le comportement de l'IA. Si vide, le prompt pédagogique par défaut est utilisé.
             </p>
             {{ form_errors(form.system_prompt) }}
         </div>
 
-        <div class="pt-2">
-            <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
-                Sauvegarder la configuration
-            </button>
-        </div>
+        <div class="divider-lava"></div>
+
+        <button type="submit"
+                class="bg-lava text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-[#d44d1b] transition lava-glow-sm"
+                style="font-family:'Poppins',sans-serif">
+            Sauvegarder la configuration
+        </button>
 
         {{ form_end(form) }}
     </div>

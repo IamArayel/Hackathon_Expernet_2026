@@ -96,8 +96,8 @@ make fixtures
 | `make logs` | Logs en temps réel |
 | `make help` | Lister toutes les commandes |
 
-L'application est accessible sur <http://localhost:8080>.
-Documentation API (Swagger) : <http://localhost:8080/api/doc>
+L'application est accessible sur <http://10.200.20.45:8888>.
+Documentation API (Swagger) : <http://10.200.20.45:8888/api/doc>
 
 #### Comptes de test (après `make fixtures`)
 

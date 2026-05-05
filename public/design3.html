@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 3 — Verre de Lave — Academ'Île</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .font-heading { font-family: 'Poppins', sans-serif; }
+
+        /* ——— Volcanic background ——— */
+        body {
+            background:
+                radial-gradient(ellipse at 20% 85%, rgba(241, 90, 34, 0.22) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 15%, rgba(160, 30, 0, 0.18) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(80, 10, 0, 0.3) 0%, transparent 80%),
+                linear-gradient(160deg, #080303 0%, #120806 25%, #1a0e07 55%, #0e0e0e 100%);
+            min-height: 100vh;
+        }
+
+        /* ——— Glassmorphism CSS (valeurs générées via glass3d.dev) ——— */
+        .glass {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-nav {
+            background: rgba(8, 3, 3, 0.55);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border-bottom: 1px solid rgba(241, 90, 34, 0.18);
+        }
+
+        /* Card glass — tuned with glass3d.dev for volcanic palette */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.055);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .glass-card:hover {
+            background: rgba(241, 90, 34, 0.09);
+            border-color: rgba(241, 90, 34, 0.38);
+            box-shadow:
+                0 12px 48px rgba(241, 90, 34, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            transform: translateY(-3px);
+        }
+
+        .glass-badge {
+            background: rgba(241, 90, 34, 0.14);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 90, 34, 0.28);
+        }
+
+        .glass-stat {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ——— Lava button ——— */
+        .lava-btn {
+            background: linear-gradient(135deg, #f15a22 0%, #c84a18 100%);
+            box-shadow:
+                0 0 22px rgba(241, 90, 34, 0.42),
+                0 4px 16px rgba(241, 90, 34, 0.28);
+            transition: all 0.3s ease;
+        }
+        .lava-btn:hover {
+            box-shadow:
+                0 0 35px rgba(241, 90, 34, 0.6),
+                0 6px 24px rgba(241, 90, 34, 0.38);
+            transform: translateY(-1px);
+        }
+
+        .outline-glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+        }
+        .outline-glass:hover {
+            background: rgba(241, 90, 34, 0.08);
+            border-color: rgba(241, 90, 34, 0.45);
+        }
+
+        /* ——— Background depth orbs ——— */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ——— Floating animations ——— */
+        @keyframes drift {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33%       { transform: translateY(-12px) translateX(4px); }
+            66%       { transform: translateY(-6px) translateX(-3px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; }
+            50%       { opacity: 1; }
+        }
+        .drift-1 { animation: drift 7s ease-in-out infinite; }
+        .drift-2 { animation: drift 9s ease-in-out infinite 2.5s; }
+        .drift-3 { animation: drift 11s ease-in-out infinite 5s; }
+        .glow-pulse { animation: pulse-glow 3s ease-in-out infinite; }
+
+        /* ——— Gradient text ——— */
+        .lava-text {
+            background: linear-gradient(135deg, #f15a22 0%, #ff8a50 50%, #f15a22 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ——— Progress bar ——— */
+        .lava-progress {
+            background: linear-gradient(90deg, #f15a22, #ff8a50);
+            box-shadow: 0 0 8px rgba(241, 90, 34, 0.5);
+        }
+
+        /* ——— Glass divider ——— */
+        .glass-divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(241, 90, 34, 0.3), transparent);
+        }
+    </style>
+</head>
+<body class="text-white relative">
+
+    <!-- Background orbs (depth layers) -->
+    <div class="orb w-[500px] h-[500px] bg-orange-700/15 top-[-100px] left-[-150px]"></div>
+    <div class="orb w-[350px] h-[350px] bg-red-900/12 bottom-[50px] right-[-80px]"></div>
+    <div class="orb w-[200px] h-[200px] bg-orange-500/10 top-[40%] left-[40%]"></div>
+
+    <!-- Label design -->
+    <div class="fixed top-4 right-4 z-50 lava-btn text-white text-xs font-bold px-3 py-1.5 rounded-full">
+        Design 3 — Verre de Lave (Glassmorphism)
+    </div>
+
+    <!-- ——— NAV ——— -->
+    <nav class="glass-nav sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 lava-btn rounded-xl flex items-center justify-center text-xl">🌋</div>
+                <span class="text-xl font-bold font-heading">Academ'<span class="lava-text">Île</span></span>
+            </div>
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="#" class="text-gray-300 hover:text-[#f15a22] transition">Formations</a>
+                <a href="#" class="text-gray-300 hover:text-[#f15a22] transition">Classement</a>
+                <a href="#" class="text-gray-300 hover:text-[#f15a22] transition">Assistant IA</a>
+                <div class="glass-badge flex items-center gap-2 px-4 py-1.5 rounded-full">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#f15a22] glow-pulse"></span>
+                    <span class="text-[#f15a22] text-xs font-bold">Niv. 3</span>
+                    <span class="text-orange-800">·</span>
+                    <span class="text-gray-300 text-xs">450 XP</span>
+                </div>
+                <a href="#" class="lava-btn text-white px-5 py-2 rounded-xl font-semibold text-sm">Connexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ——— HERO ——— -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 py-24 text-center overflow-hidden">
+
+        <!-- Floating particles -->
+        <div class="absolute top-20 left-20 w-3 h-3 rounded-full bg-[#f15a22] drift-1 opacity-50 glow-pulse"></div>
+        <div class="absolute top-40 right-32 w-2 h-2 rounded-full bg-orange-300 drift-2 opacity-35"></div>
+        <div class="absolute bottom-20 left-40 w-2 h-2 rounded-full bg-[#f15a22] drift-3 opacity-45"></div>
+        <div class="absolute top-12 right-1/3 w-1.5 h-1.5 rounded-full bg-orange-400 drift-1 opacity-30"></div>
+
+        <div class="glass-badge inline-flex items-center gap-2 text-[#f15a22] text-xs font-bold px-5 py-2 rounded-full mb-10 tracking-widest uppercase">
+            🌋 &nbsp; La Réunion · L'éruption du savoir
+        </div>
+
+        <h1 class="text-6xl font-extrabold font-heading mb-7 leading-tight">
+            L'éruption du<br>
+            <span class="lava-text">savoir commence ici</span>
+        </h1>
+
+        <p class="text-gray-400 text-lg max-w-xl mx-auto mb-12 leading-relaxed">
+            Parcours de formation générés par IA, gamifiés et adaptés. Progresse, gagne de l'XP, deviens une légende de l'île.
+        </p>
+
+        <div class="flex items-center justify-center gap-4 mb-16">
+            <a href="#" class="lava-btn text-white px-9 py-4 rounded-xl font-bold font-heading text-base">
+                Commencer l'aventure
+            </a>
+            <a href="#" class="outline-glass text-gray-200 px-9 py-4 rounded-xl font-semibold text-base">
+                Voir les formations
+            </a>
+        </div>
+
+        <!-- Glass stats row -->
+        <div class="grid grid-cols-3 gap-5 max-w-2xl mx-auto">
+            <div class="glass-stat rounded-2xl p-6">
+                <div class="text-3xl font-bold lava-text font-heading">124</div>
+                <div class="text-gray-500 text-xs mt-2 uppercase tracking-wider">Formations</div>
+            </div>
+            <div class="glass-stat rounded-2xl p-6">
+                <div class="text-3xl font-bold lava-text font-heading">3 490</div>
+                <div class="text-gray-500 text-xs mt-2 uppercase tracking-wider">Apprenants</div>
+            </div>
+            <div class="glass-stat rounded-2xl p-6">
+                <div class="text-3xl font-bold lava-text font-heading">98%</div>
+                <div class="text-gray-500 text-xs mt-2 uppercase tracking-wider">Satisfaction</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ——— DASHBOARD PREVIEW (en-dessous du hero) ——— -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 pb-16">
+        <div class="glass rounded-3xl p-8 grid grid-cols-2 gap-10 items-center">
+            <!-- User progress -->
+            <div>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 lava-btn rounded-2xl flex items-center justify-center text-xl">🧑</div>
+                    <div>
+                        <div class="font-bold font-heading">Kévin M.</div>
+                        <div class="text-xs text-gray-500 mt-0.5">Niveau 3 · 450 XP</div>
+                    </div>
+                    <div class="ml-auto glass-badge px-3 py-1.5 rounded-full text-xs text-[#f15a22] font-bold">
+                        🔥 Streak x5
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <div class="flex justify-between text-xs text-gray-500 mb-2">
+                        <span>Progression vers Niveau 4</span>
+                        <span class="text-[#f15a22] font-bold">450 / 600 XP</span>
+                    </div>
+                    <div class="w-full bg-white/5 rounded-full h-2.5 border border-white/5">
+                        <div class="lava-progress h-2.5 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 glass rounded-xl p-3.5">
+                        <div class="w-8 h-8 lava-btn rounded-lg flex items-center justify-center text-sm font-bold">✓</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-medium">Module 1 — Introduction</div>
+                            <div class="text-xs text-gray-500 mt-0.5">+50 XP · Terminé</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 glass rounded-xl p-3.5">
+                        <div class="w-8 h-8 lava-btn rounded-lg flex items-center justify-center text-sm font-bold">✓</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-medium">Module 2 — Approfondissement</div>
+                            <div class="text-xs text-gray-500 mt-0.5">+75 XP · Terminé</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 outline-glass rounded-xl p-3.5">
+                        <div class="w-8 h-8 glass rounded-lg flex items-center justify-center text-gray-400 text-sm font-bold border border-white/10">3</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-400">Module 3 — En cours...</div>
+                            <div class="text-xs text-gray-600 mt-0.5">+100 XP à débloquer</div>
+                        </div>
+                        <a href="#" class="lava-btn text-white text-xs px-3 py-1.5 rounded-lg font-semibold">Continuer</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Leaderboard snippet -->
+            <div>
+                <h3 class="font-bold font-heading text-lg mb-5">Classement <span class="lava-text">volcanique</span></h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 glass rounded-xl px-5 py-4 border border-[rgba(241,90,34,0.2)]">
+                        <span class="text-2xl">🥇</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">Marie_Réunion</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 12</div>
+                        </div>
+                        <span class="text-[#f15a22] text-sm font-bold">2 340 XP</span>
+                    </div>
+                    <div class="flex items-center gap-4 glass rounded-xl px-5 py-4">
+                        <span class="text-2xl">🥈</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">TomPiton</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 10</div>
+                        </div>
+                        <span class="text-gray-300 text-sm font-bold">1 980 XP</span>
+                    </div>
+                    <div class="flex items-center gap-4 glass rounded-xl px-5 py-4">
+                        <span class="text-2xl">🥉</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">LavaLearner</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 9</div>
+                        </div>
+                        <span class="text-gray-300 text-sm font-bold">1 720 XP</span>
+                    </div>
+                    <div class="flex items-center gap-4 glass-badge rounded-xl px-5 py-4">
+                        <span class="text-xl">👤</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-[#f15a22]">Kévin M. (toi)</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 3</div>
+                        </div>
+                        <span class="text-[#f15a22] text-sm font-bold">450 XP</span>
+                    </div>
+                </div>
+                <a href="#" class="mt-5 inline-block outline-glass text-gray-300 text-xs px-5 py-2.5 rounded-xl font-semibold">
+                    Voir tout le classement →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ——— FORMATIONS ——— -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 pb-20">
+        <hr class="glass-divider mb-12">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-2xl font-bold font-heading">Formations disponibles</h2>
+            <div class="flex gap-2">
+                <button class="text-xs px-4 py-1.5 rounded-full lava-btn text-white font-semibold">Tout</button>
+                <button class="text-xs px-4 py-1.5 rounded-full outline-glass text-gray-300 hover:text-[#f15a22]">Débutant</button>
+                <button class="text-xs px-4 py-1.5 rounded-full outline-glass text-gray-300 hover:text-[#f15a22]">Intermédiaire</button>
+                <button class="text-xs px-4 py-1.5 rounded-full outline-glass text-gray-300 hover:text-[#f15a22]">Avancé</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Card 1 -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-green-400 bg-green-400/10 border border-green-400/20 px-2.5 py-1 rounded-full tracking-wide">Débutant</span>
+                    <span class="text-xs text-gray-600">Mathématiques</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:lava-text transition">Introduction à l'Algèbre</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">Les bases des équations linéaires et des fonctions, expliquées simplement.</p>
+                <hr class="glass-divider my-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 6 modules</span>
+                    <span class="text-[#f15a22] text-xs font-bold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 px-2.5 py-1 rounded-full tracking-wide">Intermédiaire</span>
+                    <span class="text-xs text-gray-600">Histoire</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Histoire de la Réunion</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">Découvrez l'histoire riche et complexe de l'île de la Réunion.</p>
+                <hr class="glass-divider my-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 8 modules</span>
+                    <span class="text-[#f15a22] text-xs font-bold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-red-400 bg-red-400/10 border border-red-400/20 px-2.5 py-1 rounded-full tracking-wide">Avancé</span>
+                    <span class="text-xs text-gray-600">Biologie</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Écologie volcanique</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">L'impact des éruptions volcaniques sur les écosystèmes insulaires.</p>
+                <hr class="glass-divider my-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 10 modules</span>
+                    <span class="text-[#f15a22] text-xs font-bold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 4 — with progress -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-green-400 bg-green-400/10 border border-green-400/20 px-2.5 py-1 rounded-full tracking-wide">Débutant</span>
+                    <span class="text-xs text-gray-600">Informatique</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Bases de Python</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">Apprendre à coder avec Python depuis zéro, pas à pas.</p>
+                <div class="mt-4 mb-4">
+                    <div class="flex justify-between text-xs text-gray-500 mb-2">
+                        <span>Progression</span><span class="text-[#f15a22] font-semibold">40%</span>
+                    </div>
+                    <div class="w-full bg-white/5 rounded-full h-1.5">
+                        <div class="lava-progress h-1.5 rounded-full" style="width:40%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 7 modules</span>
+                    <span class="text-[#f15a22] text-xs font-bold group-hover:translate-x-1 transition-transform inline-block">Continuer →</span>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 px-2.5 py-1 rounded-full tracking-wide">Intermédiaire</span>
+                    <span class="text-xs text-gray-600">Géographie</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Géologie de la Réunion</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">Comprendre la formation du Piton de la Fournaise et les paysages uniques.</p>
+                <hr class="glass-divider my-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 5 modules</span>
+                    <span class="text-[#f15a22] text-xs font-bold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 6 — Completed -->
+            <div class="glass-card rounded-2xl p-6 cursor-pointer group relative overflow-hidden">
+                <div class="absolute top-4 right-4">
+                    <span class="text-xs glass-badge text-[#f15a22] border border-[rgba(241,90,34,0.3)] font-bold px-2.5 py-1 rounded-full">✓ Terminé</span>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase text-red-400 bg-red-400/10 border border-red-400/20 px-2.5 py-1 rounded-full tracking-wide">Avancé</span>
+                    <span class="text-xs text-gray-600">Sciences</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Chimie organique</h3>
+                <p class="text-gray-500 text-sm mt-2 leading-relaxed">Structure moléculaire, réactions chimiques et applications.</p>
+                <hr class="glass-divider my-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-600">📚 12 modules</span>
+                    <span class="text-green-400 text-xs font-bold">+240 XP 🏆</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

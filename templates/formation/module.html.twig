@@ -4,75 +4,63 @@
 {% block body %}
 <div class="max-w-3xl mx-auto">
     <a href="{{ path('formation_show', {id: formation.id}) }}"
-       class="text-sm text-indigo-600 hover:underline mb-4 inline-block">
+       class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-lava transition mb-6">
         ← Retour à {{ formation.title }}
     </a>
 
-    {% for type, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="mb-4 px-4 py-3 rounded-lg text-sm font-medium
-                {% if type == 'success' %}bg-green-50 text-green-800 border border-green-200
-                {% elseif type == 'info' %}bg-blue-50 text-blue-800 border border-blue-200
-                {% else %}bg-red-50 text-red-800 border border-red-200{% endif %}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
-    {# En-tête module #}
-    <div class="bg-white rounded-xl shadow p-8 mb-6">
-        <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">{{ formation.title }}</p>
-        <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ module.title }}</h1>
+    {# ——— Module header ——— #}
+    <div class="card-volcanic rounded-2xl p-8 mb-6">
+        <p class="text-xs text-gray-600 uppercase tracking-widest font-semibold mb-2">{{ formation.title }}</p>
+        <h1 class="text-2xl font-bold text-white mb-4" style="font-family:'Poppins',sans-serif">{{ module.title }}</h1>
 
         {% if progress and progress.completed %}
-            <span class="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+            <span class="inline-flex items-center gap-2 bg-green-900/30 text-green-400 border border-green-800/50 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
                 ✓ Complété — score : {{ progress.score }}%
             </span>
         {% endif %}
 
         {% if module.content %}
-            <div class="prose prose-indigo max-w-none text-gray-700 leading-relaxed">
+            <div class="divider-lava my-5"></div>
+            <div class="text-gray-400 leading-relaxed text-sm prose-invert">
                 {{ module.content|nl2br }}
             </div>
         {% endif %}
     </div>
 
-    {# Quiz #}
+    {# ——— Quiz ——— #}
     {% if module.questions|length > 0 %}
-        <div class="bg-white rounded-xl shadow p-8 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-6">
-                Quiz — {{ module.questions|length }} question(s)
+        <div class="card-volcanic rounded-2xl p-8 mb-6">
+            <h2 class="text-xl font-bold text-white mb-7" style="font-family:'Poppins',sans-serif">
+                Quiz
+                <span class="text-gray-600 font-normal text-sm ml-2">{{ module.questions|length }} question(s)</span>
             </h2>
 
             <form method="post"
                   action="{{ path('formation_module_submit', {id: formation.id, moduleId: module.id}) }}">
-                <input type="hidden" name="_token"
-                       value="{{ csrf_token('module_submit_' ~ module.id) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('module_submit_' ~ module.id) }}">
 
                 {% for question in module.questions %}
                     <div class="mb-8">
-                        <p class="font-medium text-gray-800 mb-3">
-                            {{ loop.index }}. {{ question.content }}
+                        <p class="font-semibold text-gray-200 mb-4 leading-snug">
+                            <span class="text-lava font-bold mr-2">{{ loop.index }}.</span>{{ question.content }}
                         </p>
 
                         {% if question.type == 'mcq' and question.options|length > 0 %}
                             <div class="space-y-2">
                                 {% for option in question.options %}
-                                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200
-                                                  hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition">
+                                    <label class="radio-volcanic">
                                         <input type="radio"
                                                name="question_{{ question.id }}"
                                                value="{{ option }}"
-                                               class="text-indigo-600 focus:ring-indigo-500"
                                                {% if progress and progress.completed %}disabled{% endif %}>
-                                        <span class="text-gray-700">{{ option }}</span>
+                                        <span class="text-gray-300 text-sm">{{ option }}</span>
                                     </label>
                                 {% endfor %}
                             </div>
                         {% else %}
                             <textarea name="question_{{ question.id }}"
                                       rows="3"
-                                      class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                      class="input-volcanic resize-none"
                                       placeholder="Votre réponse…"
                                       {% if progress and progress.completed %}disabled{% endif %}></textarea>
                         {% endif %}
@@ -80,8 +68,10 @@
                 {% endfor %}
 
                 {% if not (progress and progress.completed) %}
+                    <div class="divider-lava mb-7"></div>
                     <button type="submit"
-                            class="w-full bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+                            class="w-full bg-lava text-white font-bold px-6 py-3.5 rounded-xl hover:bg-[#d44d1b] transition lava-glow"
+                            style="font-family:'Poppins',sans-serif">
                         Valider mes réponses
                     </button>
                 {% endif %}
@@ -89,11 +79,11 @@
         </div>
     {% endif %}
 
-    {# Navigation entre modules #}
-    <div class="flex justify-between items-center">
+    {# ——— Navigation entre modules ——— #}
+    <div class="flex justify-between items-center pt-2">
         {% if prevModule %}
             <a href="{{ path('formation_module_show', {id: formation.id, moduleId: prevModule.id}) }}"
-               class="flex items-center gap-2 text-sm text-gray-600 hover:text-indigo-600 transition">
+               class="flex items-center gap-2 text-sm text-gray-500 hover:text-lava transition">
                 ← {{ prevModule.title }}
             </a>
         {% else %}
@@ -102,12 +92,12 @@
 
         {% if nextModule %}
             <a href="{{ path('formation_module_show', {id: formation.id, moduleId: nextModule.id}) }}"
-               class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition">
+               class="flex items-center gap-2 text-sm font-bold text-lava hover:underline transition">
                 {{ nextModule.title }} →
             </a>
         {% else %}
             <a href="{{ path('formation_show', {id: formation.id}) }}"
-               class="text-sm font-semibold text-green-600 hover:text-green-800 transition">
+               class="text-sm font-bold text-green-400 hover:text-green-300 transition">
                 Fin de la formation →
             </a>
         {% endif %}

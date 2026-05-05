@@ -4,69 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — {% block title %}Academ'Île{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     {% block stylesheets %}{% endblock %}
     {% block javascripts %}{{ importmap('app') }}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-[#0a0a0a] text-white min-h-screen">
 
 <div class="flex min-h-screen">
-    {# Sidebar #}
-    <aside class="w-56 bg-indigo-900 text-white flex flex-col fixed top-0 left-0 h-full z-10">
-        <div class="px-4 py-5 border-b border-indigo-700">
-            <div class="font-bold text-lg leading-tight">Academ'Île</div>
-            <div class="text-xs text-indigo-300 mt-0.5">Administration</div>
+
+    {# ——— Sidebar ——— #}
+    <aside class="w-56 bg-[#0d0d0d] border-r border-[#1e1e1e] flex flex-col fixed top-0 left-0 h-full z-10">
+        <div class="px-5 py-5 border-b border-[#1e1e1e]">
+            <div class="flex items-center gap-2.5 mb-1">
+                <div class="w-7 h-7 bg-lava rounded-lg flex items-center justify-center text-sm lava-glow-sm">🌋</div>
+                <span class="font-bold text-base" style="font-family:'Poppins',sans-serif">Academ'<span class="text-lava">Île</span></span>
+            </div>
+            <div class="text-xs text-gray-600 ml-9">Administration</div>
         </div>
+
         <nav class="flex-1 px-3 py-4 space-y-0.5">
             {% set currentPath = app.request.pathInfo %}
-            <a href="{{ path('admin_dashboard') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
-                      {{ currentPath == '/admin' or currentPath == '/admin/' ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
-                Dashboard
-            </a>
-            <a href="{{ path('admin_formation_index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
-                      {{ '/admin/formation' in currentPath or '/admin/formation' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
-                Formations
-            </a>
-            <a href="{{ path('admin_user_index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
-                      {{ '/admin/users' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
-                Utilisateurs
-            </a>
-            <a href="{{ path('admin_leaderboard_index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
-                      {{ '/admin/leaderboard' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
-                Classement
-            </a>
-            <a href="{{ path('admin_ai_settings') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
-                      {{ '/admin/ai' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
-                Assistant IA
-            </a>
+
+            {% set navItems = [
+                {path: 'admin_dashboard',          label: 'Dashboard',     icon: '📊', match: ['/admin', '/admin/']},
+                {path: 'admin_formation_index',    label: 'Formations',    icon: '📚', match: ['/admin/formation']},
+                {path: 'admin_user_index',         label: 'Utilisateurs',  icon: '👤', match: ['/admin/users']},
+                {path: 'admin_leaderboard_index',  label: 'Classement',    icon: '🏆', match: ['/admin/leaderboard']},
+                {path: 'admin_ai_settings',        label: 'Assistant IA',  icon: '🤖', match: ['/admin/ai']}
+            ] %}
+
+            {% for item in navItems %}
+                {% set isActive = false %}
+                {% for m in item.match %}
+                    {% if m in currentPath or currentPath == m %}{% set isActive = true %}{% endif %}
+                {% endfor %}
+                <a href="{{ path(item.path) }}"
+                   class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition font-medium
+                          {{ isActive
+                              ? 'bg-lava/15 text-lava border border-lava/25'
+                              : 'text-gray-500 hover:text-gray-200 hover:bg-smoke' }}">
+                    <span class="text-base">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            {% endfor %}
         </nav>
-        <div class="px-3 py-4 border-t border-indigo-700">
-            <a href="{{ path('home') }}" class="text-xs text-indigo-300 hover:text-white transition">
-                &larr; Site principal
+
+        <div class="px-3 py-4 border-t border-[#1e1e1e]">
+            <a href="{{ path('home') }}" class="flex items-center gap-2 text-xs text-gray-600 hover:text-lava transition px-3 py-2 rounded-lg hover:bg-smoke">
+                ← Site principal
             </a>
         </div>
     </aside>
 
-    {# Main content #}
+    {# ——— Main content ——— #}
     <div class="ml-56 flex-1 flex flex-col min-h-screen">
-        <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-            <h1 class="text-lg font-semibold text-gray-900">{% block page_title %}{% endblock %}</h1>
-            <div class="text-sm text-gray-500">
-                {{ app.user.username }}
-                <span class="ml-2 bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-medium">Admin</span>
+        <header class="bg-[#0d0d0d] border-b border-[#1e1e1e] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+            <h1 class="text-base font-bold text-white" style="font-family:'Poppins',sans-serif">
+                {% block page_title %}{% endblock %}
+            </h1>
+            <div class="flex items-center gap-2 text-sm">
+                <span class="text-gray-500">{{ app.user.username }}</span>
+                <span class="bg-lava/15 text-lava border border-lava/25 text-xs px-2.5 py-0.5 rounded-full font-bold">Admin</span>
             </div>
         </header>
+
         <main class="flex-1 p-6">
             {% for type, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="mb-4 rounded-lg px-4 py-3 text-sm font-medium
-                        {% if type == 'success' %}bg-green-100 text-green-800 border border-green-200
-                        {% elseif type == 'error' %}bg-red-100 text-red-800 border border-red-200
-                        {% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                    <div class="mb-4 rounded-xl px-4 py-3 text-sm font-medium border
+                        {% if type == 'success' %}bg-green-900/30 text-green-400 border-green-800/50
+                        {% elseif type == 'error' %}bg-red-900/30 text-red-400 border-red-800/50
+                        {% else %}bg-lava/10 text-lava border-lava/30{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
