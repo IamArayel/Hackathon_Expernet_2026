@@ -23,11 +23,12 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 | Couche | Technologie |
 | ------ | ----------- |
-| Frontend | Twig + Tailwind CSS + Stimulus (Symfony UX) |
-| Backend | Symfony (PHP 8.2) |
-| Base de données | MySQL 8 |
+| Frontend | Twig + Tailwind CSS v4 + Stimulus (Symfony UX) |
+| Backend | Symfony 8 (PHP 8.2+) |
+| Base de données | MySQL 8 (Doctrine ORM 3) |
 | IA | Mistral AI (`mistral-small-latest`) |
 | Gamification | XP, niveaux, badges |
+| API doc | NelmioApiDocBundle v5 (Swagger UI — `/api/doc`) |
 
 ## Prérequis
 
@@ -67,9 +68,13 @@ docker compose exec app composer install
 
 # 5. Initialiser la base de données
 docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+
+# 6. Compiler les assets Tailwind
+docker compose exec app php bin/console tailwind:build
 ```
 
 L'application est accessible sur <http://localhost:8080>.
+Documentation API (Swagger) : <http://localhost:8080/api/doc>
 
 ### En local (sans Docker)
 

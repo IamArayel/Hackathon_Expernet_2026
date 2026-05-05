@@ -22,10 +22,10 @@ class UserProgress
     #[ORM\JoinColumn(nullable: false)]
     private ?Module $module = null;
 
-    #[ORM\Column(default: false)]
+    #[ORM\Column]
     private bool $completed = false;
 
-    #[ORM\Column(default: 0)]
+    #[ORM\Column]
     private int $score = 0;
 
     #[ORM\Column(nullable: true)]

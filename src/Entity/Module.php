@@ -24,7 +24,7 @@ class Module
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
-    #[ORM\Column(default: 0)]
+    #[ORM\Column]
     private int $position = 0;
 
     #[ORM\ManyToOne(inversedBy: 'modules')]

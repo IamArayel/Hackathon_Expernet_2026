@@ -30,7 +30,7 @@ class Question
     #[Assert\Choice(choices: ['mcq', 'open'])]
     private string $type = 'mcq';
 
-    #[ORM\Column(default: 1)]
+    #[ORM\Column]
     #[Assert\Range(min: 1, max: 3)]
     private int $difficulty = 1;
 

@@ -38,13 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(default: 0)]
+    #[ORM\Column]
     private int $xp = 0;
 
-    #[ORM\Column(default: 1)]
+    #[ORM\Column]
     private int $level = 1;
 
-    #[ORM\Column(default: 0)]
+    #[ORM\Column]
     private int $streak = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
