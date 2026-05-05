@@ -25,8 +25,8 @@ build: ## (Re)construire les images Docker
 	$(DC) up --build -d
 
 reset: ## Supprimer les volumes et reconstruire (⚠ efface la base)
-	$(DC) down -v
-	$(DC) up --build -d
+	$(DC) down -v --remove-orphans
+	make install
 
 logs: ## Afficher les logs en temps réel
 	$(DC) logs -f
