@@ -3,13 +3,14 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Repository\SettingRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class MistralService
+class AiService
 {
-    private const API_URL = 'https://api.mistral.ai/v1/chat/completions';
-    private const MODEL = 'mistral-small-latest';
-    private const SYSTEM_PROMPT = <<<PROMPT
+    private const API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
+    private const DEFAULT_MODEL = 'google/gemma-2-2b-it';
+    private const DEFAULT_SYSTEM_PROMPT = <<<PROMPT
         Tu es un assistant pédagogique pour la plateforme Academ'Île. Tu aides les apprenants
         à comprendre les concepts de leurs formations, tu poses des questions pour évaluer leur
         compréhension et tu adaptes tes explications à leur niveau.
@@ -18,12 +19,16 @@ class MistralService
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
-        private readonly string $apiKey,
+        private readonly SettingRepository $settingRepository,
+        private readonly string $fallbackApiKey = '',
     ) {}
 
     public function chat(string $userMessage, ?User $user = null): string
     {
-        $systemPrompt = self::SYSTEM_PROMPT;
+        $apiKey = $this->settingRepository->getValue('ai_api_key') ?: $this->fallbackApiKey;
+        $model = $this->settingRepository->getValue('ai_model') ?: self::DEFAULT_MODEL;
+        $systemPrompt = $this->settingRepository->getValue('ai_system_prompt') ?: self::DEFAULT_SYSTEM_PROMPT;
+
         if ($user) {
             $systemPrompt .= sprintf(
                 "\nL'apprenant s'appelle %s, il est au niveau %d avec %d XP.",
@@ -36,14 +41,13 @@ class MistralService
         try {
             $response = $this->httpClient->request('POST', self::API_URL, [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Authorization' => 'Bearer ' . $apiKey,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
-                    'model' => self::MODEL,
+                    'model' => $model,
                     'messages' => [
-                        ['role' => 'system', 'content' => $systemPrompt],
-                        ['role' => 'user', 'content' => $userMessage],
+                        ['role' => 'user', 'content' => $systemPrompt . "\n\n" . $userMessage],
                     ],
                     'max_tokens' => 512,
                     'temperature' => 0.7,

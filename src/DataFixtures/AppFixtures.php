@@ -26,8 +26,9 @@ class AppFixtures extends Fixture
     private function loadUsers(ObjectManager $manager): void
     {
         $users = [
-            ['email' => 'anthonycda@test.com', 'username' => 'AnthonyCDA', 'password' => 'azerty01', 'xp' => 350, 'level' => 2],
-            ['email' => 'emiecda@test.com',    'username' => 'EmieCDA',    'password' => 'azerty2',  'xp' => 120, 'level' => 1],
+            ['email' => 'anthonycda@test.com', 'username' => 'AnthonyCDA', 'password' => 'azerty01', 'xp' => 350, 'level' => 2, 'roles' => ['ROLE_ADMIN']],
+            ['email' => 'emiecda@test.com',    'username' => 'EmieCDA',    'password' => 'azerty2',  'xp' => 120, 'level' => 1, 'roles' => ['ROLE_ADMIN']],
+            ['email' => 'test@test.com',        'username' => 'testeur',    'password' => 'azerty03', 'xp' => 0,   'level' => 1, 'roles' => []],
         ];
 
         foreach ($users as $data) {
@@ -35,7 +36,8 @@ class AppFixtures extends Fixture
             $user->setEmail($data['email'])
                 ->setUsername($data['username'])
                 ->setXp($data['xp'])
-                ->setLevel($data['level']);
+                ->setLevel($data['level'])
+                ->setRoles($data['roles']);
             $user->setPassword($this->hasher->hashPassword($user, $data['password']));
             $manager->persist($user);
         }

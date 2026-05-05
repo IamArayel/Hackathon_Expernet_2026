@@ -13,6 +13,8 @@ nelmio_api_doc:
               description: Classement et progression XP
             - name: IA
               description: Assistant pédagogique IA (Mistral)
+            - name: Administration
+              description: "Panneau d'administration (ROLE_ADMIN requis) — CRUD formations/modules/questions, gestion des utilisateurs, reset du classement, configuration de l'IA"
     areas:
         path_patterns:
             - ^/(?!_profiler|_wdt|api/doc)

@@ -26,7 +26,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 | Frontend | Twig + Tailwind CSS v4 + Stimulus (Symfony UX) |
 | Backend | Symfony 8 (PHP 8.4+) |
 | Base de données | MariaDB 11 (Doctrine ORM 3) |
-| IA | Mistral AI (`mistral-small-latest`) |
+| IA | NVIDIA NIM (`gemma-2-2b-it`) |
 | Gamification | XP, niveaux, badges |
 | API doc | NelmioApiDocBundle v5 (Swagger UI — `/api/doc`) |
 
@@ -34,7 +34,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (inclut Docker Compose)
 - `make` — voir ci-dessous selon l'OS
-- Une clé API Mistral AI (gratuite sur [console.mistral.ai](https://console.mistral.ai))
+- Une clé API NVIDIA NIM (gratuite sur [build.nvidia.com](https://build.nvidia.com))
 
 > **PHP, Composer et MariaDB ne sont pas requis en local** — tout s'exécute dans les conteneurs Docker.
 
@@ -60,7 +60,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 > | `MARIADB_ROOT_PASSWORD` | Mot de passe root MariaDB (Docker uniquement) |
 > | `MARIADB_USER` | Utilisateur MariaDB — doit correspondre à `DATABASE_URL` |
 > | `MARIADB_PASSWORD` | Mot de passe MariaDB — doit correspondre à `DATABASE_URL` |
-> | `MISTRAL_API_KEY` | Clé API Mistral — à demander au référent |
+> | `NVIDIA_API_KEY` | Clé API NVIDIA NIM — à demander au référent |
 
 ### Via Docker (recommandé)
 
@@ -99,6 +99,12 @@ make fixtures
 L'application est accessible sur <http://localhost:8080>.
 Documentation API (Swagger) : <http://localhost:8080/api/doc>
 
+#### Comptes de test (après `make fixtures`)
+
+| Rôle | Email | Identifiant | Mot de passe |
+| ---- | ----- | ----------- | ------------ |
+| Utilisateur | `test@test.com` | `testeur` | `azerty03` |
+
 ### En local (sans Docker)
 
 ```bash
@@ -111,7 +117,7 @@ composer install
 
 # 3. Configurer l'environnement
 cp .env.example .env
-# Adapter DATABASE_URL (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
+# Adapter DATABASE_URL (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et NVIDIA_API_KEY
 
 # 4. Générer un APP_SECRET
 php bin/console secret:generate-tokens
@@ -125,7 +131,8 @@ symfony server:start
 php bin/console tailwind:build --watch
 ```
 
-L'application est accessible sur https://localhost:8000.
+L'application est accessible sur https://localhost:8080.
+Documentation API (Swagger) : <https://localhost:8080/api/doc>
 
 ## Architecture
 

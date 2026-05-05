@@ -9,6 +9,7 @@ services:
     environment:
       APP_ENV: dev
       DATABASE_URL: "mysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE}?serverVersion=mariadb-11.4.5&charset=utf8mb4"
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY}
     depends_on:
       db:
         condition: service_healthy
