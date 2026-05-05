@@ -3,8 +3,8 @@ APP = $(DC) exec app
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install start stop restart reset logs sh \
-        composer-install migrate fixtures tailwind cc
+.PHONY: help install start stop restart build reset logs sh db-sh \
+        composer-install migrate fixtures tailwind tailwind-watch cc
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | \
