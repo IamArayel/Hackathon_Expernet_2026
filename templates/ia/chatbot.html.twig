@@ -3,6 +3,33 @@
 
 {% block body %}
 <style>
+
+/* Fond de page dynamique */
+body {
+    background: radial-gradient(circle at center, #1a0a05 0%, #050505 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Effet de lueur diffuse en arrière-plan */
+body::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(241, 90, 34, 0.05) 0%, transparent 70%);
+    z-index: -1;
+}
+
+/* Optimisation de la boîte de chat pour le fond sombre */
+.chat-box {
+    background: rgba(15, 15, 15, 0.8) !important;
+    backdrop-filter: blur(12px); /* Effet verre fumé */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
 /* Chat container */
 .chat-box {
     background: linear-gradient(145deg, #0f0f0f, #080808);
@@ -49,6 +76,7 @@
     border: 1px solid #2a2a2a;
     border-radius: 14px 14px 14px 4px;
 }
+
 </style>
 
 <div class="max-w-2xl mx-auto">
