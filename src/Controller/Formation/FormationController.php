@@ -10,6 +10,7 @@ use App\Repository\ModuleRepository;
 use App\Repository\UserProgressRepository;
 use App\Service\GamificationService;
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,9 +19,21 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/formations', name: 'formation_')]
+#[OA\Tag(name: 'Formations')]
 class FormationController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
+    #[OA\Get(
+        summary: 'Lister les formations',
+        description: 'Retourne la liste des formations, filtrables par difficulté ou catégorie.',
+        parameters: [
+            new OA\Parameter(name: 'difficulty', in: 'query', required: false,
+                schema: new OA\Schema(type: 'string', enum: ['beginner', 'intermediate', 'advanced'])),
+            new OA\Parameter(name: 'category', in: 'query', required: false,
+                schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Liste des formations (HTML)')]
+    )]
     public function index(FormationRepository $repository, Request $request): Response
     {
         $difficulty = $request->query->get('difficulty');
@@ -40,6 +53,18 @@ class FormationController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[OA\Get(
+        summary: 'Détail d\'une formation',
+        description: 'Affiche la formation et la liste de ses modules avec le statut de progression.',
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Page de détail de la formation (HTML)'),
+            new OA\Response(response: 404, description: 'Formation introuvable'),
+        ]
+    )]
     public function show(Formation $formation, UserProgressRepository $progressRepository): Response
     {
         $user = $this->getUser();
@@ -56,6 +81,18 @@ class FormationController extends AbstractController
     }
 
     #[Route('/{id}/start', name: 'start', methods: ['POST'])]
+    #[OA\Post(
+        summary: 'Démarrer une formation',
+        description: 'Crée un enregistrement de progression pour le premier module et redirige vers celui-ci.',
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 302, description: 'Redirection vers le premier module'),
+            new OA\Response(response: 404, description: 'Formation introuvable'),
+        ]
+    )]
     public function start(
         Formation $formation,
         EntityManagerInterface $em,
@@ -85,6 +122,21 @@ class FormationController extends AbstractController
 
     #[Route('/{id}/module/{moduleId}', name: 'module_show', methods: ['GET'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[OA\Get(
+        summary: 'Afficher un module',
+        description: 'Affiche le contenu du module et son quiz. Nécessite d\'être authentifié.',
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'moduleId', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Page du module avec contenu et questions (HTML)'),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+            new OA\Response(response: 404, description: 'Module introuvable'),
+        ]
+    )]
     public function moduleShow(
         Formation $formation,
         int $moduleId,
@@ -118,6 +170,20 @@ class FormationController extends AbstractController
 
     #[Route('/{id}/module/{moduleId}/submit', name: 'module_submit', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[OA\Post(
+        summary: 'Soumettre les réponses d\'un module',
+        description: 'Corrige les réponses MCQ, calcule le score, attribue les XP et redirige vers le module suivant.',
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'moduleId', in: 'path', required: true,
+                schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 302, description: 'Redirection vers le module suivant ou la formation'),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+        ]
+    )]
     public function moduleSubmit(
         Formation $formation,
         int $moduleId,
@@ -183,6 +249,33 @@ class FormationController extends AbstractController
     }
 
     #[Route('/module/{id}/complete', name: 'module_complete', methods: ['POST'])]
+    #[OA\Post(
+        summary: 'Valider un module (JSON)',
+        description: 'Marque le module comme complété et retourne les XP gagnés. Endpoint JSON pour intégrations tierces.',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'score', type: 'integer', example: 85,
+                        description: 'Score obtenu (0-100)'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Progression mise à jour',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'xpGained', type: 'integer', example: 42),
+                        new OA\Property(property: 'totalXp', type: 'integer', example: 392),
+                        new OA\Property(property: 'level', type: 'integer', example: 2),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Non authentifié'),
+        ]
+    )]
     public function completeModule(
         \App\Entity\Module $module,
         Request $request,

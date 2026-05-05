@@ -4,6 +4,15 @@ nelmio_api_doc:
             title: ACADEM'ÎLE API
             description: API de la plateforme EdTech gamifiée ACADEM'ÎLE
             version: 1.0.0
+        tags:
+            - name: Authentification
+              description: Inscription et connexion des utilisateurs
+            - name: Formations
+              description: Parcours de formation et modules
+            - name: Gamification
+              description: Classement et progression XP
+            - name: IA
+              description: Assistant pédagogique IA (Mistral)
     areas:
         path_patterns:
-            - ^/api(?!/doc)
+            - ^/(?!_profiler|_wdt|api/doc)
