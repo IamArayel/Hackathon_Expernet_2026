@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 1 — Éruption — Academ'Île</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#f15a22',
+                        ember: '#ff8a50',
+                    },
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .font-heading { font-family: 'Poppins', sans-serif; }
+
+        .lava-glow {
+            box-shadow: 0 0 25px rgba(241, 90, 34, 0.45);
+        }
+        .hero-bg {
+            background:
+                radial-gradient(ellipse at 50% 110%, rgba(241, 90, 34, 0.28) 0%, transparent 65%),
+                linear-gradient(180deg, #0a0a0a 0%, #160805 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid #222;
+        }
+        .card-hover:hover {
+            box-shadow: 0 0 22px rgba(241, 90, 34, 0.22);
+            border-color: rgba(241, 90, 34, 0.6);
+            transform: translateY(-2px);
+        }
+        .divider-lava {
+            background: linear-gradient(90deg, transparent, #f15a22, transparent);
+            height: 1px;
+        }
+        .tag-label {
+            background: linear-gradient(90deg, #1a1a1a, #222);
+        }
+        /* Subtle scanline on hero */
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.01) 2px,
+                rgba(255,255,255,0.01) 4px
+            );
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+
+    <!-- Label design -->
+    <div class="fixed top-4 right-4 z-50 bg-[#f15a22] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg lava-glow">
+        Design 1 — Éruption (Dark Volcanic)
+    </div>
+
+    <!-- NAV -->
+    <nav class="border-b border-[#1e1e1e] bg-[#0a0a0a]/95 backdrop-blur-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-[#f15a22] rounded-xl flex items-center justify-center lava-glow">
+                    <span class="text-white text-lg">🌋</span>
+                </div>
+                <span class="text-xl font-bold font-heading">Academ'<span class="text-[#f15a22]">Île</span></span>
+            </div>
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="#" class="text-gray-400 hover:text-[#f15a22] transition">Formations</a>
+                <a href="#" class="text-gray-400 hover:text-[#f15a22] transition">Classement</a>
+                <a href="#" class="text-gray-400 hover:text-[#f15a22] transition">Assistant IA</a>
+                <div class="flex items-center gap-2 bg-[#141414] border border-[#2a2a2a] rounded-full px-4 py-1.5">
+                    <span class="text-[#f15a22] text-xs font-bold">Niv. 3</span>
+                    <span class="text-gray-700">·</span>
+                    <span class="text-gray-400 text-xs">450 XP</span>
+                </div>
+                <a href="#" class="bg-[#f15a22] hover:bg-[#d44d1b] text-white px-5 py-2 rounded-xl font-semibold transition lava-glow text-sm">
+                    Connexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero-bg relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 py-24 text-center relative z-10">
+            <div class="inline-block bg-[#f15a22]/10 border border-[#f15a22]/30 text-[#f15a22] text-xs font-semibold px-5 py-2 rounded-full mb-8 tracking-widest uppercase">
+                🌋 &nbsp; Île de la Réunion · Apprendre autrement
+            </div>
+            <h1 class="text-6xl font-extrabold font-heading mb-6 leading-tight">
+                Le savoir s'éveille<br>
+                <span class="text-[#f15a22]">comme un volcan</span>
+            </h1>
+            <p class="text-gray-500 text-lg max-w-lg mx-auto mb-12 leading-relaxed">
+                Des parcours de formation générés par l'IA. Progressez module par module, gagnez de l'XP et montez en niveau.
+            </p>
+            <div class="flex items-center justify-center gap-4">
+                <a href="#" class="bg-[#f15a22] hover:bg-[#d44d1b] text-white px-9 py-4 rounded-xl font-bold font-heading transition lava-glow text-base">
+                    Commencer l'aventure
+                </a>
+                <a href="#" class="border border-[#2a2a2a] text-gray-400 hover:border-[#f15a22] hover:text-[#f15a22] px-9 py-4 rounded-xl font-semibold transition text-base">
+                    Voir les formations
+                </a>
+            </div>
+        </div>
+        <div class="divider-lava"></div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="bg-[#0f0f0f] border-b border-[#1a1a1a]">
+        <div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-3 gap-6 text-center">
+            <div>
+                <div class="text-3xl font-bold text-[#f15a22] font-heading">124</div>
+                <div class="text-gray-600 text-xs mt-1 uppercase tracking-wider">Formations</div>
+            </div>
+            <div class="border-x border-[#1e1e1e]">
+                <div class="text-3xl font-bold text-[#f15a22] font-heading">3 490</div>
+                <div class="text-gray-600 text-xs mt-1 uppercase tracking-wider">Apprenants actifs</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-[#f15a22] font-heading">98%</div>
+                <div class="text-gray-600 text-xs mt-1 uppercase tracking-wider">Satisfaction</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORMATIONS -->
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-2xl font-bold font-heading">Formations disponibles</h2>
+            <div class="flex gap-2">
+                <button class="text-xs px-4 py-1.5 rounded-full bg-[#f15a22] text-white font-semibold lava-glow">Tout</button>
+                <button class="text-xs px-4 py-1.5 rounded-full border border-[#2a2a2a] text-gray-400 hover:border-[#f15a22] hover:text-[#f15a22] transition">Débutant</button>
+                <button class="text-xs px-4 py-1.5 rounded-full border border-[#2a2a2a] text-gray-400 hover:border-[#f15a22] hover:text-[#f15a22] transition">Intermédiaire</button>
+                <button class="text-xs px-4 py-1.5 rounded-full border border-[#2a2a2a] text-gray-400 hover:border-[#f15a22] hover:text-[#f15a22] transition">Avancé</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            <!-- Card 1 -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-green-400 bg-green-400/10 px-2.5 py-1 rounded-full">Débutant</span>
+                    <span class="text-xs text-gray-700">Mathématiques</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Introduction à l'Algèbre</h3>
+                <p class="text-gray-600 text-sm mt-2">Les bases des équations linéaires et des fonctions, expliquées simplement.</p>
+                <div class="mt-5 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">6 modules</span>
+                    <span class="text-[#f15a22] text-xs font-semibold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full">Intermédiaire</span>
+                    <span class="text-xs text-gray-700">Histoire</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Histoire de la Réunion</h3>
+                <p class="text-gray-600 text-sm mt-2">Découvrez l'histoire riche et complexe de l'île de la Réunion depuis ses origines.</p>
+                <div class="mt-5 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">8 modules</span>
+                    <span class="text-[#f15a22] text-xs font-semibold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-red-400 bg-red-400/10 px-2.5 py-1 rounded-full">Avancé</span>
+                    <span class="text-xs text-gray-700">Biologie</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Écologie volcanique</h3>
+                <p class="text-gray-600 text-sm mt-2">L'impact des éruptions volcaniques sur les écosystèmes insulaires uniques.</p>
+                <div class="mt-5 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">10 modules</span>
+                    <span class="text-[#f15a22] text-xs font-semibold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 4 — XP progress variant -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-green-400 bg-green-400/10 px-2.5 py-1 rounded-full">Débutant</span>
+                    <span class="text-xs text-gray-700">Informatique</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Bases de Python</h3>
+                <p class="text-gray-600 text-sm mt-2">Apprendre à coder avec Python depuis zéro, pas à pas.</p>
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs text-gray-600 mb-1.5">
+                        <span>Progression</span><span>40%</span>
+                    </div>
+                    <div class="w-full bg-[#1e1e1e] rounded-full h-1.5">
+                        <div class="bg-[#f15a22] h-1.5 rounded-full" style="width:40%"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">7 modules</span>
+                    <span class="text-[#f15a22] text-xs font-semibold group-hover:translate-x-1 transition-transform inline-block">Continuer →</span>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full">Intermédiaire</span>
+                    <span class="text-xs text-gray-700">Géographie</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Géologie de la Réunion</h3>
+                <p class="text-gray-600 text-sm mt-2">Comprendre la formation du Piton de la Fournaise et des paysages réunionnais.</p>
+                <div class="mt-5 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">5 modules</span>
+                    <span class="text-[#f15a22] text-xs font-semibold group-hover:translate-x-1 transition-transform inline-block">Commencer →</span>
+                </div>
+            </div>
+
+            <!-- Card 6 — Locked/completed -->
+            <div class="bg-[#111] card-hover rounded-2xl p-6 cursor-pointer group relative overflow-hidden">
+                <div class="absolute top-3 right-3">
+                    <span class="text-xs bg-[#f15a22]/20 text-[#f15a22] border border-[#f15a22]/30 px-2 py-0.5 rounded-full font-semibold">✓ Terminé</span>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-red-400 bg-red-400/10 px-2.5 py-1 rounded-full">Avancé</span>
+                    <span class="text-xs text-gray-700">Sciences</span>
+                </div>
+                <h3 class="font-bold text-lg font-heading text-white group-hover:text-[#f15a22] transition">Chimie organique</h3>
+                <p class="text-gray-600 text-sm mt-2">Structure moléculaire, réactions chimiques et applications industrielles.</p>
+                <div class="mt-5 flex items-center justify-between">
+                    <span class="text-xs text-gray-700">12 modules</span>
+                    <span class="text-green-400 text-xs font-semibold">+240 XP gagnés</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LEADERBOARD TEASER -->
+    <div class="max-w-7xl mx-auto px-6 pb-20">
+        <div class="bg-[#111] border border-[#1e1e1e] rounded-3xl p-10">
+            <div class="grid grid-cols-2 gap-10 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold font-heading mb-3">Classement <span class="text-[#f15a22]">volcanique</span></h2>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">Chaque module complété te rapporte de l'XP. Monte dans le classement et deviens la légende de l'île.</p>
+                    <a href="#" class="inline-block bg-[#f15a22] text-white px-6 py-2.5 rounded-xl font-semibold text-sm lava-glow hover:bg-[#d44d1b] transition">
+                        Voir le classement
+                    </a>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 bg-[#f15a22]/10 border border-[#f15a22]/20 rounded-xl px-5 py-3">
+                        <span class="text-2xl">🥇</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">Marie_Réunion</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 12</div>
+                        </div>
+                        <span class="text-[#f15a22] text-sm font-bold">2 340 XP</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-[#141414] border border-[#222] rounded-xl px-5 py-3">
+                        <span class="text-2xl">🥈</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">TomPiton</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 10</div>
+                        </div>
+                        <span class="text-gray-300 text-sm font-bold">1 980 XP</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-[#141414] border border-[#222] rounded-xl px-5 py-3">
+                        <span class="text-2xl">🥉</span>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">LavaLearner</div>
+                            <div class="text-xs text-gray-600 mt-0.5">Niveau 9</div>
+                        </div>
+                        <span class="text-gray-300 text-sm font-bold">1 720 XP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
