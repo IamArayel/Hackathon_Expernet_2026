@@ -15,16 +15,16 @@ class AiSettingsType extends AbstractType
     {
         $builder
             ->add('api_key', TextType::class, [
-                'label' => 'Clé API Mistral',
+                'label' => 'Clé API NVIDIA NIM',
                 'required' => false,
                 'attr' => ['placeholder' => 'Laisser vide pour utiliser la variable d\'environnement'],
             ])
             ->add('model', ChoiceType::class, [
                 'label' => 'Modèle',
                 'choices' => [
-                    'Mistral Small (rapide)' => 'mistral-small-latest',
-                    'Mistral Medium' => 'mistral-medium-latest',
-                    'Mistral Large (puissant)' => 'mistral-large-latest',
+                    'Gemma 2 2B (rapide)' => 'gemma-2-2b-it',
+                    'Gemma 2 9B (équilibré)' => 'google/gemma-2-9b-it',
+                    'Llama 3.1 8B' => 'meta/llama-3.1-8b-instruct',
                 ],
             ])
             ->add('system_prompt', TextareaType::class, [

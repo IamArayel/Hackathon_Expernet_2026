@@ -2,7 +2,7 @@
 
 namespace App\Controller\IA;
 
-use App\Service\MistralService;
+use App\Service\AiService;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,7 +17,7 @@ class ChatbotController extends AbstractController
     #[Route('', name: 'index', methods: ['GET'])]
     #[OA\Get(
         summary: 'Interface du chatbot IA',
-        description: 'Page HTML de l\'assistant pédagogique alimenté par Mistral AI.',
+        description: 'Page HTML de l\'assistant pédagogique alimenté par NVIDIA NIM (gemma-2-2b-it).',
         responses: [new OA\Response(response: 200, description: 'Page du chatbot (HTML)')]
     )]
     public function index(): Response
@@ -28,7 +28,7 @@ class ChatbotController extends AbstractController
     #[Route('/ask', name: 'ask', methods: ['POST'])]
     #[OA\Post(
         summary: 'Envoyer un message au chatbot (JSON)',
-        description: 'Envoie un message à l\'assistant IA (Mistral) et retourne sa réponse. L\'IA adapte ses réponses au niveau de l\'utilisateur connecté.',
+        description: 'Envoie un message à l\'assistant IA (NVIDIA NIM) et retourne sa réponse. L\'IA adapte ses réponses au niveau de l\'utilisateur connecté.',
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -60,7 +60,7 @@ class ChatbotController extends AbstractController
             ),
         ]
     )]
-    public function ask(Request $request, MistralService $mistral): JsonResponse
+    public function ask(Request $request, AiService $mistral): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $message = trim($data['message'] ?? '');

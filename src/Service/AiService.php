@@ -6,10 +6,10 @@ use App\Entity\User;
 use App\Repository\SettingRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class MistralService
+class AiService
 {
-    private const API_URL = 'https://api.mistral.ai/v1/chat/completions';
-    private const DEFAULT_MODEL = 'mistral-small-latest';
+    private const API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
+    private const DEFAULT_MODEL = 'gemma-2-2b-it';
     private const DEFAULT_SYSTEM_PROMPT = <<<PROMPT
         Tu es un assistant pédagogique pour la plateforme Academ'Île. Tu aides les apprenants
         à comprendre les concepts de leurs formations, tu poses des questions pour évaluer leur
@@ -25,9 +25,9 @@ class MistralService
 
     public function chat(string $userMessage, ?User $user = null): string
     {
-        $apiKey = $this->settingRepository->getValue('mistral_api_key') ?: $this->fallbackApiKey;
-        $model = $this->settingRepository->getValue('mistral_model') ?: self::DEFAULT_MODEL;
-        $systemPrompt = $this->settingRepository->getValue('mistral_system_prompt') ?: self::DEFAULT_SYSTEM_PROMPT;
+        $apiKey = $this->settingRepository->getValue('ai_api_key') ?: $this->fallbackApiKey;
+        $model = $this->settingRepository->getValue('ai_model') ?: self::DEFAULT_MODEL;
+        $systemPrompt = $this->settingRepository->getValue('ai_system_prompt') ?: self::DEFAULT_SYSTEM_PROMPT;
 
         if ($user) {
             $systemPrompt .= sprintf(
