@@ -18,7 +18,7 @@ class ProfileController extends AbstractController
         // Disons que chaque niveau demande 1000 XP
         $xpNextLevel = $user->getLevel() * 1000;
         $xpPercentage = min(($user->getXp() % 1000) / 10, 100);
-
+        
         return $this->render('profile/index.html.twig', [
             'user' => $user,
             'xp_percentage' => $xpPercentage,
