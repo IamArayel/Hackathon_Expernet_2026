@@ -36,7 +36,7 @@ class AdminAiController extends AbstractController
     {
         $data = [
             'api_key' => $settingRepo->getValue('ai_api_key'),
-            'model' => $settingRepo->getValue('ai_model', 'gemma-2-2b-it'),
+            'model' => $settingRepo->getValue('ai_model', 'google/gemma-2-2b-it'),
             'system_prompt' => $settingRepo->getValue('ai_system_prompt'),
         ];
 
@@ -46,7 +46,7 @@ class AdminAiController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $saved = $form->getData();
             $settingRepo->setValue('ai_api_key', $saved['api_key'] ?: null);
-            $settingRepo->setValue('ai_model', $saved['model'] ?: 'gemma-2-2b-it');
+            $settingRepo->setValue('ai_model', $saved['model'] ?: 'google/gemma-2-2b-it');
             $settingRepo->setValue('ai_system_prompt', $saved['system_prompt'] ?: null);
             $this->addFlash('success', 'Configuration IA sauvegardée.');
             return $this->redirectToRoute('admin_ai_settings');

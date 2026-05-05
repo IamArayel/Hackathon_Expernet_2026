@@ -22,7 +22,7 @@ class AiSettingsType extends AbstractType
             ->add('model', ChoiceType::class, [
                 'label' => 'Modèle',
                 'choices' => [
-                    'Gemma 2 2B (rapide)' => 'gemma-2-2b-it',
+                    'Gemma 2 2B (rapide)' => 'google/gemma-2-2b-it',
                     'Gemma 2 9B (équilibré)' => 'google/gemma-2-9b-it',
                     'Llama 3.1 8B' => 'meta/llama-3.1-8b-instruct',
                 ],

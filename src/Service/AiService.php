@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class AiService
 {
     private const API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-    private const DEFAULT_MODEL = 'gemma-2-2b-it';
+    private const DEFAULT_MODEL = 'google/gemma-2-2b-it';
     private const DEFAULT_SYSTEM_PROMPT = <<<PROMPT
         Tu es un assistant pédagogique pour la plateforme Academ'Île. Tu aides les apprenants
         à comprendre les concepts de leurs formations, tu poses des questions pour évaluer leur
@@ -47,8 +47,7 @@ class AiService
                 'json' => [
                     'model' => $model,
                     'messages' => [
-                        ['role' => 'system', 'content' => $systemPrompt],
-                        ['role' => 'user', 'content' => $userMessage],
+                        ['role' => 'user', 'content' => $systemPrompt . "\n\n" . $userMessage],
                     ],
                     'max_tokens' => 512,
                     'temperature' => 0.7,
