@@ -38,17 +38,16 @@ class AppFixtures extends Fixture
                 ->setLevel($data['level']);
             $user->setPassword($this->hasher->hashPassword($user, $data['password']));
             $manager->persist($user);
-            $this->addReference('user_' . $data['username'], $user);
         }
     }
 
     private function loadBadges(ObjectManager $manager): void
     {
         $badges = [
-            ['name' => 'Premier pas',    'description' => 'Compléter votre premier module',    'icon' => '🎯', 'condition' => ['type' => 'modules_completed', 'value' => 1]],
-            ['name' => 'Apprenti',       'description' => 'Atteindre le niveau 2',              'icon' => '📚', 'condition' => ['type' => 'level',             'value' => 2]],
-            ['name' => 'Centurion XP',   'description' => 'Accumuler 100 XP',                  'icon' => '⚡', 'condition' => ['type' => 'xp',               'value' => 100]],
-            ['name' => 'Expert',         'description' => 'Atteindre le niveau 5',              'icon' => '🏆', 'condition' => ['type' => 'level',             'value' => 5]],
+            ['name' => 'Premier pas',    'description' => 'Compléter votre premier module',    'icon' => '🎯', 'criteria' => ['type' => 'modules_completed', 'value' => 1]],
+            ['name' => 'Apprenti',       'description' => 'Atteindre le niveau 2',              'icon' => '📚', 'criteria' => ['type' => 'level',             'value' => 2]],
+            ['name' => 'Centurion XP',   'description' => 'Accumuler 100 XP',                  'icon' => '⚡', 'criteria' => ['type' => 'xp',               'value' => 100]],
+            ['name' => 'Expert',         'description' => 'Atteindre le niveau 5',              'icon' => '🏆', 'criteria' => ['type' => 'level',             'value' => 5]],
         ];
 
         foreach ($badges as $data) {
@@ -56,7 +55,7 @@ class AppFixtures extends Fixture
             $badge->setName($data['name'])
                 ->setDescription($data['description'])
                 ->setIcon($data['icon'])
-                ->setCondition($data['condition']);
+                ->setCriteria($data['criteria']);
             $manager->persist($badge);
         }
     }
