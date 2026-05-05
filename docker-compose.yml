@@ -8,6 +8,7 @@ services:
       - /var/www/html/vendor
     environment:
       APP_ENV: dev
+      DATABASE_URL: "mysql://${MARIADB_USER:-academ_ile}:${MARIADB_PASSWORD:-academ_ile}@db:3306/${MARIADB_DATABASE:-academ_ile}?serverVersion=mariadb-11.4.5&charset=utf8mb4"
     depends_on:
       db:
         condition: service_healthy
