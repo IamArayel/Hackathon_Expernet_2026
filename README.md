@@ -25,7 +25,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 | ------ | ----------- |
 | Frontend | Twig + Tailwind CSS v4 + Stimulus (Symfony UX) |
 | Backend | Symfony 8 (PHP 8.2+) |
-| Base de données | MySQL 8 (Doctrine ORM 3) |
+| Base de données | MariaDB 11 (Doctrine ORM 3) |
 | IA | Mistral AI (`mistral-small-latest`) |
 | Gamification | XP, niveaux, badges |
 | API doc | NelmioApiDocBundle v5 (Swagger UI — `/api/doc`) |
@@ -35,7 +35,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 - PHP 8.2+
 - [Composer](https://getcomposer.org/)
 - [Symfony CLI](https://symfony.com/download)
-- MySQL 8+
+- MariaDB 11+
 - Une clé API Mistral AI (gratuite sur [console.mistral.ai](https://console.mistral.ai))
 
 ## Installation
@@ -119,7 +119,7 @@ L'application est accessible sur https://localhost:8000.
 | **Questions** | Module de gestion des questions - récupération et validation depuis le Back-End |
 | **Chatbot** | Interface conversationnelle - envoie les requêtes IA et récupère le niveau de l'utilisateur |
 | **Leaderboard** | Calcule et affiche le classement des apprenants |
-| **Base de données (MariaDB)** | Persistance : enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
+| **Base de données** | Persistance : enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
 
 #### Flux principaux
 
