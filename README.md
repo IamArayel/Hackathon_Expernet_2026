@@ -24,7 +24,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 | Couche | Technologie |
 | ------ | ----------- |
 | Frontend | Twig + Tailwind CSS v4 + Stimulus (Symfony UX) |
-| Backend | Symfony 8 (PHP 8.2+) |
+| Backend | Symfony 8 (PHP 8.4+) |
 | Base de données | MariaDB 11 (Doctrine ORM 3) |
 | IA | Mistral AI (`mistral-small-latest`) |
 | Gamification | XP, niveaux, badges |
@@ -32,7 +32,7 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 ## Prérequis
 
-- PHP 8.2+
+- PHP 8.4+
 - [Composer](https://getcomposer.org/)
 - [Symfony CLI](https://symfony.com/download)
 - MariaDB 11+
