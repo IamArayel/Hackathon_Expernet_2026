@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
 #[Route('/auth', name: 'auth_')]
 #[OA\Tag(name: 'Authentification')]
@@ -87,6 +89,8 @@ class AuthController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $hasher,
         EntityManagerInterface $em,
+        UserAuthenticatorInterface $userAuthenticator,
+        FormLoginAuthenticator $formLoginAuthenticator,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('home');
@@ -102,7 +106,9 @@ class AuthController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Compte créé ! Bienvenue sur Academ\'Île.');
-            return $this->redirectToRoute('auth_login');
+
+            return $userAuthenticator->authenticateUser($user, $formLoginAuthenticator, $request)
+                ?? $this->redirectToRoute('home');
         }
 
         return $this->render('auth/register.html.twig', ['form' => $form]);
