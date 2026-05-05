@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ReponseRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use ApiPlatform\Metadata\ApiResource;
+ 
+#[ApiResource]
 #[ORM\Entity(repositoryClass: ReponseRepository::class)]
 class Reponse
 {

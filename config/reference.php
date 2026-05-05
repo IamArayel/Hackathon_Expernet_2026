@@ -645,7 +645,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             }>,
  *     },
  *     uid?: bool|array{ // Uid configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         default_uuid_version?: 7|6|4|1|Param, // Default: 7
  *         name_based_uuid_version?: 5|3|Param, // Default: 5
  *         name_based_uuid_namespace?: scalar|Param|null,
@@ -1511,6 +1511,761 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     generate_final_classes?: bool|Param, // Default: true
  *     generate_final_entities?: bool|Param, // Default: false
  * }
+ * @psalm-type ApiPlatformConfig = array{
+ *     title?: scalar|Param|null, // The title of the API. // Default: ""
+ *     description?: scalar|Param|null, // The description of the API. // Default: ""
+ *     version?: scalar|Param|null, // The version of the API. // Default: "0.0.0"
+ *     show_webby?: bool|Param, // If true, show Webby on the documentation page // Default: true
+ *     use_symfony_listeners?: bool|Param, // Uses Symfony event listeners instead of the ApiPlatform\Symfony\Controller\MainController. // Default: false
+ *     name_converter?: scalar|Param|null, // Specify a name converter to use. // Default: null
+ *     asset_package?: scalar|Param|null, // Specify an asset package name to use. // Default: null
+ *     path_segment_name_generator?: scalar|Param|null, // Specify a path name generator to use. // Default: "api_platform.metadata.path_segment_name_generator.underscore"
+ *     inflector?: scalar|Param|null, // Specify an inflector to use. // Default: "api_platform.metadata.inflector"
+ *     validator?: array{
+ *         serialize_payload_fields?: mixed, // Set to null to serialize all payload fields when a validation error is thrown, or set the fields you want to include explicitly. // Default: []
+ *         query_parameter_validation?: bool|Param, // Deprecated: Will be removed in API Platform 5.0. // Default: true
+ *     },
+ *     jsonapi?: array{
+ *         use_iri_as_id?: bool|Param, // Set to false to use entity identifiers instead of IRIs as the "id" field in JSON:API responses. // Default: true
+ *     },
+ *     eager_loading?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *         fetch_partial?: bool|Param, // Fetch only partial data according to serialization groups. If enabled, Doctrine ORM entities will not work as expected if any of the other fields are used. // Default: false
+ *         max_joins?: int|Param, // Max number of joined relations before EagerLoading throws a RuntimeException // Default: 30
+ *         force_eager?: bool|Param, // Force join on every relation. If disabled, it will only join relations having the EAGER fetch mode. // Default: true
+ *     },
+ *     handle_symfony_errors?: bool|Param, // Allows to handle symfony exceptions. // Default: false
+ *     enable_swagger?: bool|Param, // Enable the Swagger documentation and export. // Default: true
+ *     enable_json_streamer?: bool|Param, // Enable json streamer. // Default: false
+ *     enable_swagger_ui?: bool|Param, // Enable Swagger UI // Default: true
+ *     enable_re_doc?: bool|Param, // Enable ReDoc // Default: true
+ *     enable_scalar?: bool|Param, // Enable Scalar API Reference // Default: true
+ *     enable_entrypoint?: bool|Param, // Enable the entrypoint // Default: true
+ *     enable_docs?: bool|Param, // Enable the docs // Default: true
+ *     enable_profiler?: bool|Param, // Enable the data collector and the WebProfilerBundle integration. // Default: true
+ *     enable_phpdoc_parser?: bool|Param, // Enable resource metadata collector using PHPStan PhpDocParser. // Default: true
+ *     enable_link_security?: bool|Param, // Deprecated: This option is always enabled and will be removed in API Platform 5.0. // Enable security for Links (sub resources). // Default: true
+ *     collection?: array{
+ *         exists_parameter_name?: scalar|Param|null, // The name of the query parameter to filter on nullable field values. // Default: "exists"
+ *         order?: scalar|Param|null, // The default order of results. // Default: "ASC"
+ *         order_parameter_name?: scalar|Param|null, // The name of the query parameter to order results. // Default: "order"
+ *         order_nulls_comparison?: "nulls_smallest"|"nulls_largest"|"nulls_always_first"|"nulls_always_last"|Param|null, // The nulls comparison strategy. // Default: null
+ *         pagination?: bool|array{
+ *             enabled?: bool|Param, // Default: true
+ *             page_parameter_name?: scalar|Param|null, // The default name of the parameter handling the page number. // Default: "page"
+ *             enabled_parameter_name?: scalar|Param|null, // The name of the query parameter to enable or disable pagination. // Default: "pagination"
+ *             items_per_page_parameter_name?: scalar|Param|null, // The name of the query parameter to set the number of items per page. // Default: "itemsPerPage"
+ *             partial_parameter_name?: scalar|Param|null, // The name of the query parameter to enable or disable partial pagination. // Default: "partial"
+ *         },
+ *     },
+ *     mapping?: array{
+ *         imports?: list<scalar|Param|null>,
+ *         paths?: list<scalar|Param|null>,
+ *     },
+ *     resource_class_directories?: list<scalar|Param|null>,
+ *     serializer?: array{
+ *         hydra_prefix?: bool|Param, // Use the "hydra:" prefix. // Default: false
+ *     },
+ *     doctrine?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *     },
+ *     doctrine_mongodb_odm?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *     },
+ *     oauth?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         clientId?: scalar|Param|null, // The oauth client id. // Default: ""
+ *         clientSecret?: scalar|Param|null, // The OAuth client secret. Never use this parameter in your production environment. It exposes crucial security information. This feature is intended for dev/test environments only. Enable "oauth.pkce" instead // Default: ""
+ *         pkce?: bool|Param, // Enable the oauth PKCE. // Default: false
+ *         type?: scalar|Param|null, // The oauth type. // Default: "oauth2"
+ *         flow?: scalar|Param|null, // The oauth flow grant type. // Default: "application"
+ *         tokenUrl?: scalar|Param|null, // The oauth token url. // Default: ""
+ *         authorizationUrl?: scalar|Param|null, // The oauth authentication url. // Default: ""
+ *         refreshUrl?: scalar|Param|null, // The oauth refresh url. // Default: ""
+ *         scopes?: list<scalar|Param|null>,
+ *     },
+ *     graphql?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         default_ide?: scalar|Param|null, // Default: "graphiql"
+ *         graphiql?: bool|array{
+ *             enabled?: bool|Param, // Default: false
+ *         },
+ *         introspection?: bool|array{
+ *             enabled?: bool|Param, // Default: true
+ *         },
+ *         max_query_depth?: int|Param, // Default: 20
+ *         graphql_playground?: bool|array{ // Deprecated: The "graphql_playground" configuration is deprecated and will be ignored.
+ *             enabled?: bool|Param, // Default: false
+ *         },
+ *         max_query_complexity?: int|Param, // Default: 500
+ *         nesting_separator?: scalar|Param|null, // The separator to use to filter nested fields. // Default: "_"
+ *         collection?: array{
+ *             pagination?: bool|array{
+ *                 enabled?: bool|Param, // Default: true
+ *             },
+ *         },
+ *     },
+ *     swagger?: array{
+ *         persist_authorization?: bool|Param, // Persist the SwaggerUI Authorization in the localStorage. // Default: false
+ *         versions?: list<scalar|Param|null>,
+ *         api_keys?: array<string, array{ // Default: []
+ *                 name?: scalar|Param|null, // The name of the header or query parameter containing the api key.
+ *                 type?: "query"|"header"|Param, // Whether the api key should be a query parameter or a header.
+ *             }>,
+ *         http_auth?: array<string, array{ // Default: []
+ *                 scheme?: scalar|Param|null, // The OpenAPI HTTP auth scheme, for example "bearer"
+ *                 bearerFormat?: scalar|Param|null, // The OpenAPI HTTP bearer format
+ *             }>,
+ *         swagger_ui_extra_configuration?: mixed, // To pass extra configuration to Swagger UI, like docExpansion or filter. // Default: []
+ *     },
+ *     http_cache?: array{
+ *         public?: bool|Param|null, // To make all responses public by default. // Default: null
+ *         invalidation?: bool|array{ // Enable the tags-based cache invalidation system.
+ *             enabled?: bool|Param, // Default: false
+ *             varnish_urls?: list<scalar|Param|null>,
+ *             urls?: list<scalar|Param|null>,
+ *             scoped_clients?: list<scalar|Param|null>,
+ *             max_header_length?: int|Param, // Max header length supported by the cache server. // Default: 7500
+ *             request_options?: mixed, // To pass options to the client charged with the request. // Default: []
+ *             purger?: scalar|Param|null, // Specify a purger to use (available values: "api_platform.http_cache.purger.varnish.ban", "api_platform.http_cache.purger.varnish.xkey", "api_platform.http_cache.purger.souin"). // Default: "api_platform.http_cache.purger.varnish"
+ *             xkey?: array{ // Deprecated: The "xkey" configuration is deprecated, use your own purger to customize surrogate keys or the appropriate parameters.
+ *                 glue?: scalar|Param|null, // xkey glue between keys // Default: " "
+ *             },
+ *         },
+ *     },
+ *     mercure?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         hub_url?: scalar|Param|null, // The URL sent in the Link HTTP header. If not set, will default to the URL for MercureBundle's default hub. // Default: null
+ *         include_type?: bool|Param, // Always include @type in updates (including delete ones). // Default: false
+ *     },
+ *     messenger?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *     },
+ *     elasticsearch?: bool|array{
+ *         enabled?: bool|Param, // Default: false
+ *         hosts?: list<scalar|Param|null>,
+ *         ssl_ca_bundle?: scalar|Param|null, // Path to the SSL CA bundle file for Elasticsearch SSL verification. // Default: null
+ *         ssl_verification?: bool|Param, // Enable or disable SSL verification for Elasticsearch connections. // Default: true
+ *         client?: "elasticsearch"|"opensearch"|Param, // The search engine client to use: "elasticsearch" or "opensearch". // Default: "elasticsearch"
+ *     },
+ *     openapi?: array{
+ *         contact?: array{
+ *             name?: scalar|Param|null, // The identifying name of the contact person/organization. // Default: null
+ *             url?: scalar|Param|null, // The URL pointing to the contact information. MUST be in the format of a URL. // Default: null
+ *             email?: scalar|Param|null, // The email address of the contact person/organization. MUST be in the format of an email address. // Default: null
+ *         },
+ *         termsOfService?: scalar|Param|null, // A URL to the Terms of Service for the API. MUST be in the format of a URL. // Default: null
+ *         tags?: list<array{ // Default: []
+ *                 name?: scalar|Param|null,
+ *                 description?: scalar|Param|null, // Default: null
+ *             }>,
+ *         license?: array{
+ *             name?: scalar|Param|null, // The license name used for the API. // Default: null
+ *             url?: scalar|Param|null, // URL to the license used for the API. MUST be in the format of a URL. // Default: null
+ *             identifier?: scalar|Param|null, // An SPDX license expression for the API. The identifier field is mutually exclusive of the url field. // Default: null
+ *         },
+ *         swagger_ui_extra_configuration?: mixed, // To pass extra configuration to Swagger UI, like docExpansion or filter. // Default: []
+ *         scalar_extra_configuration?: mixed, // To pass extra configuration to Scalar API Reference, like theme or darkMode. // Default: []
+ *         overrideResponses?: bool|Param, // Whether API Platform adds automatic responses to the OpenAPI documentation. // Default: true
+ *         error_resource_class?: scalar|Param|null, // The class used to represent errors in the OpenAPI documentation. // Default: null
+ *         validation_error_resource_class?: scalar|Param|null, // The class used to represent validation errors in the OpenAPI documentation. // Default: null
+ *     },
+ *     maker?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *         namespace_prefix?: scalar|Param|null, // Add a prefix to all maker generated classes. e.g set it to "Api" to set the maker namespace to "App\Api\" (if the maker.root_namespace config is App). e.g. App\Api\State\MyStateProcessor // Default: ""
+ *     },
+ *     mcp?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *         format?: scalar|Param|null, // The serialization format used for MCP tool input/output. Must be a format registered in api_platform.formats (e.g. "jsonld", "json", "jsonapi"). // Default: "jsonld"
+ *     },
+ *     exception_to_status?: array<string, int|Param>,
+ *     formats?: array<string, array{ // Default: {"jsonld":{"mime_types":["application/ld+json"]}}
+ *             mime_types?: list<scalar|Param|null>,
+ *         }>,
+ *     patch_formats?: array<string, array{ // Default: {"json":{"mime_types":["application/merge-patch+json"]}}
+ *             mime_types?: list<scalar|Param|null>,
+ *         }>,
+ *     docs_formats?: array<string, array{ // Default: {"jsonld":{"mime_types":["application/ld+json"]},"jsonopenapi":{"mime_types":["application/vnd.openapi+json"]},"html":{"mime_types":["text/html"]},"yamlopenapi":{"mime_types":["application/vnd.openapi+yaml"]}}
+ *             mime_types?: list<scalar|Param|null>,
+ *         }>,
+ *     error_formats?: array<string, array{ // Default: {"jsonld":{"mime_types":["application/ld+json"]},"jsonproblem":{"mime_types":["application/problem+json"]},"json":{"mime_types":["application/problem+json","application/json"]}}
+ *             mime_types?: list<scalar|Param|null>,
+ *         }>,
+ *     jsonschema_formats?: list<scalar|Param|null>,
+ *     defaults?: array{
+ *         uri_template?: mixed,
+ *         short_name?: mixed,
+ *         description?: mixed,
+ *         types?: mixed,
+ *         operations?: mixed,
+ *         formats?: mixed,
+ *         input_formats?: mixed,
+ *         output_formats?: mixed,
+ *         uri_variables?: mixed,
+ *         route_prefix?: mixed,
+ *         defaults?: mixed,
+ *         requirements?: mixed,
+ *         options?: mixed,
+ *         stateless?: mixed,
+ *         sunset?: mixed,
+ *         accept_patch?: mixed,
+ *         status?: mixed,
+ *         host?: mixed,
+ *         schemes?: mixed,
+ *         condition?: mixed,
+ *         controller?: mixed,
+ *         class?: mixed,
+ *         url_generation_strategy?: mixed,
+ *         deprecation_reason?: mixed,
+ *         headers?: mixed,
+ *         cache_headers?: mixed,
+ *         normalization_context?: mixed,
+ *         denormalization_context?: mixed,
+ *         collect_denormalization_errors?: mixed,
+ *         hydra_context?: mixed,
+ *         openapi?: mixed,
+ *         validation_context?: mixed,
+ *         filters?: mixed,
+ *         mercure?: mixed,
+ *         messenger?: mixed,
+ *         input?: mixed,
+ *         output?: mixed,
+ *         order?: mixed,
+ *         fetch_partial?: mixed,
+ *         force_eager?: mixed,
+ *         pagination_client_enabled?: mixed,
+ *         pagination_client_items_per_page?: mixed,
+ *         pagination_client_partial?: mixed,
+ *         pagination_via_cursor?: mixed,
+ *         pagination_enabled?: mixed,
+ *         pagination_fetch_join_collection?: mixed,
+ *         pagination_use_output_walkers?: mixed,
+ *         pagination_items_per_page?: mixed,
+ *         pagination_maximum_items_per_page?: mixed,
+ *         pagination_partial?: mixed,
+ *         pagination_type?: mixed,
+ *         security?: mixed,
+ *         security_message?: mixed,
+ *         security_post_denormalize?: mixed,
+ *         security_post_denormalize_message?: mixed,
+ *         security_post_validation?: mixed,
+ *         security_post_validation_message?: mixed,
+ *         composite_identifier?: mixed,
+ *         exception_to_status?: mixed,
+ *         query_parameter_validation_enabled?: mixed,
+ *         links?: mixed,
+ *         graph_ql_operations?: mixed,
+ *         provider?: mixed,
+ *         processor?: mixed,
+ *         state_options?: mixed,
+ *         rules?: mixed,
+ *         policy?: mixed,
+ *         middleware?: mixed,
+ *         parameters?: array<string, array{ // Default: []
+ *                 key?: mixed,
+ *                 schema?: mixed,
+ *                 open_api?: mixed,
+ *                 provider?: mixed,
+ *                 filter?: mixed,
+ *                 property?: mixed,
+ *                 description?: mixed,
+ *                 properties?: mixed,
+ *                 required?: mixed,
+ *                 priority?: mixed,
+ *                 hydra?: mixed,
+ *                 constraints?: mixed,
+ *                 security?: mixed,
+ *                 security_message?: mixed,
+ *                 extra_properties?: mixed,
+ *                 filter_context?: mixed,
+ *                 native_type?: mixed,
+ *                 cast_to_array?: mixed,
+ *                 cast_to_native_type?: mixed,
+ *                 cast_fn?: mixed,
+ *                 default?: mixed,
+ *                 filter_class?: mixed,
+ *                 ...<string, mixed>
+ *             }>,
+ *         strict_query_parameter_validation?: mixed,
+ *         hide_hydra_operation?: mixed,
+ *         json_stream?: mixed,
+ *         extra_properties?: mixed,
+ *         map?: mixed,
+ *         mcp?: mixed,
+ *         route_name?: mixed,
+ *         errors?: mixed,
+ *         read?: mixed,
+ *         deserialize?: mixed,
+ *         validate?: mixed,
+ *         write?: mixed,
+ *         serialize?: mixed,
+ *         content_negotiation?: mixed,
+ *         priority?: mixed,
+ *         name?: mixed,
+ *         allow_create?: mixed,
+ *         item_uri_template?: mixed,
+ *         ...<string, mixed>
+ *     },
+ * }
+ * @psalm-type AiConfig = array{
+ *     platform?: array{
+ *         albert?: array{
+ *             api_key?: string|Param,
+ *             base_url?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         amazeeai?: array{
+ *             base_url?: string|Param,
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         anthropic?: array{
+ *             api_key?: string|Param,
+ *             version?: string|Param, // Default: null
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *             cache_retention?: "none"|"short"|"long"|Param, // Prompt cache retention policy for Anthropic models // Default: "short"
+ *         },
+ *         azure?: array<string, array{ // Default: []
+ *                 api_key?: string|Param,
+ *                 base_url?: string|Param,
+ *                 deployment?: string|Param,
+ *                 api_version?: string|Param, // The used API version
+ *                 http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *             }>,
+ *         bedrock?: array<string, array{ // Default: []
+ *                 bedrock_runtime_client?: string|Param, // Service ID of the Bedrock runtime client to use // Default: null
+ *                 model_catalog?: string|Param, // Default: null
+ *             }>,
+ *         cache?: array<string, array{ // Default: []
+ *                 platform?: string|Param,
+ *                 service?: string|Param, // The cache service id as defined under the "cache" configuration key // Default: "cache.app"
+ *                 cache_key?: string|Param, // Key used to store platform results, if not set, the current platform name will be used, the "prompt_cache_key" can be set during platform call to override this value
+ *                 ttl?: int|Param,
+ *             }>,
+ *         cartesia?: array{
+ *             api_key?: string|Param,
+ *             version?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         cerebras?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         cohere?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         decart?: array{
+ *             api_key?: string|Param,
+ *             host?: string|Param, // Default: "https://api.decart.ai/v1"
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         deepseek?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         dockermodelrunner?: array{
+ *             host_url?: string|Param, // Default: "http://127.0.0.1:12434"
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         elevenlabs?: array{
+ *             api_key?: string|Param,
+ *             endpoint?: string|Param, // Default: "https://api.elevenlabs.io/v1/"
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         failover?: array<string, array{ // Default: []
+ *                 platforms?: list<scalar|Param|null>,
+ *                 rate_limiter?: string|Param,
+ *             }>,
+ *         gemini?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         generic?: array<string, array{ // Default: []
+ *                 base_url?: string|Param,
+ *                 api_key?: string|Param,
+ *                 http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *                 model_catalog?: string|Param, // Service ID of the model catalog to use
+ *                 supports_completions?: bool|Param, // Default: true
+ *                 supports_embeddings?: bool|Param, // Default: true
+ *                 completions_path?: string|Param, // Default: "/v1/chat/completions"
+ *                 embeddings_path?: string|Param, // Default: "/v1/embeddings"
+ *             }>,
+ *         huggingface?: array{
+ *             api_key?: string|Param,
+ *             provider?: string|Param, // Default: "hf-inference"
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         lmstudio?: array{
+ *             host_url?: string|Param, // Default: "http://127.0.0.1:1234"
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         mistral?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         ollama?: array{
+ *             endpoint?: string|Param, // Endpoint for Ollama (e.g. "http://127.0.0.1:11434" for local, or a cloud endpoint). If null, the http_client is used as-is and must already be configured with a base URI.
+ *             api_key?: string|Param, // API key for Ollama Cloud authentication (optional for local usage)
+ *             http_client?: string|Param, // Service ID of the HTTP client to use. When "endpoint" is null, this client must be pre-configured (e.g. with a base_uri). // Default: "http_client"
+ *         },
+ *         openai?: array{
+ *             api_key?: string|Param,
+ *             region?: scalar|Param|null, // The region for OpenAI API (EU, US, or null for default) // Default: null
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         openrouter?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         ovh?: array{
+ *             api_key?: scalar|Param|null,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         perplexity?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         scaleway?: array{
+ *             api_key?: scalar|Param|null,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         transformersphp?: array<mixed>,
+ *         vertexai?: array{
+ *             location?: string|Param, // Required for the project-scoped endpoint. Must be set together with "project_id". // Default: null
+ *             project_id?: string|Param, // Required for the project-scoped endpoint. Must be set together with "location". // Default: null
+ *             api_key?: string|Param, // When set without "location" and "project_id", uses the global endpoint. Note: API keys only identify the project for billing and do not provide identity-based access control. For production use with IAM, audit logging, or data residency, prefer the project-scoped endpoint with service account authentication. // Default: null
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *         voyage?: array{
+ *             api_key?: string|Param,
+ *             http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *         },
+ *     },
+ *     model?: array<string, array<string, array{ // Default: []
+ *                 class?: string|Param, // The fully qualified class name of the model (must extend Symfony\AI\Platform\Model) // Default: "Symfony\\AI\\Platform\\Model"
+ *                 capabilities?: list<value-of<\Symfony\AI\Platform\Capability>|\Symfony\AI\Platform\Capability|Param>,
+ *             }>>,
+ *     agent?: array<string, array{ // Default: []
+ *             platform?: string|Param, // Service name of platform // Default: "Symfony\\AI\\Platform\\PlatformInterface"
+ *             model?: mixed,
+ *             memory?: mixed, // Memory configuration: string for static memory, or array with "service" key for service reference // Default: null
+ *             prompt?: string|array{ // The system prompt configuration
+ *                 text?: string|Param, // The system prompt text
+ *                 file?: string|Param, // Path to file containing the system prompt
+ *                 include_tools?: bool|Param, // Include tool definitions at the end of the system prompt // Default: false
+ *                 enable_translation?: bool|Param, // Enable translation for the system prompt // Default: false
+ *                 translation_domain?: string|Param, // The translation domain for the system prompt // Default: null
+ *             },
+ *             tools?: bool|array{
+ *                 enabled?: bool|Param, // Default: true
+ *                 services?: list<string|array{ // Default: []
+ *                         service?: string|Param,
+ *                         agent?: string|Param,
+ *                         name?: string|Param,
+ *                         description?: string|Param,
+ *                         method?: string|Param,
+ *                     }>,
+ *             },
+ *             keep_tool_messages?: bool|Param, // Keep tool messages in the conversation history // Default: false
+ *             include_sources?: bool|Param, // Include sources exposed by tools as part of the tool result metadata // Default: false
+ *             fault_tolerant_toolbox?: bool|Param, // Continue the agent run even if a tool call fails // Default: true
+ *             speech?: bool|array{ // Speech (TTS/STT) decorator configuration
+ *                 enabled?: bool|Param, // Default: true
+ *                 text_to_speech_platform?: string|Param, // Service name of the TTS platform (e.g. ai.platform.elevenlabs). // Default: null
+ *                 speech_to_text_platform?: string|Param, // Service name of the STT platform (e.g. ai.platform.openai). // Default: null
+ *                 tts_model?: string|Param, // Text-to-speech model name // Default: null
+ *                 tts_options?: mixed, // Provider-specific TTS options // Default: []
+ *                 stt_model?: string|Param, // Speech-to-text model name // Default: null
+ *                 stt_options?: mixed, // Provider-specific STT options // Default: []
+ *             },
+ *         }>,
+ *     multi_agent?: array<string, array{ // Default: []
+ *             orchestrator?: string|Param, // Service ID of the orchestrator agent
+ *             handoffs?: array<string, list<scalar|Param|null>>,
+ *             fallback?: string|Param, // Service ID of the fallback agent for unmatched requests
+ *         }>,
+ *     store?: array{
+ *         azuresearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 api_version?: string|Param,
+ *                 index_name?: string|Param, // The name of the store will be used if the "index_name" option is not set
+ *                 http_client?: string|Param, // Default: "http_client"
+ *                 vector_field?: string|Param, // Default: "vector"
+ *             }>,
+ *         cache?: array<string, array{ // Default: []
+ *                 service?: string|Param, // Default: "cache.app"
+ *                 cache_key?: string|Param, // The name of the store will be used if the key is not set.
+ *                 strategy?: string|Param, // Default: "cosine"
+ *             }>,
+ *         chromadb?: array<string, array{ // Default: []
+ *                 client?: string|Param, // Default: "Codewithkyrian\\ChromaDB\\Client"
+ *                 collection?: string|Param,
+ *             }>,
+ *         clickhouse?: array<string, array{ // Default: []
+ *                 dsn?: string|Param,
+ *                 http_client?: string|Param,
+ *                 database?: string|Param,
+ *                 table?: string|Param,
+ *             }>,
+ *         cloudflare?: array<string, array{ // Default: []
+ *                 account_id?: string|Param,
+ *                 api_key?: string|Param,
+ *                 index_name?: string|Param,
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 metric?: string|Param, // Default: "cosine"
+ *                 endpoint?: string|Param,
+ *             }>,
+ *         elasticsearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 index_name?: string|Param,
+ *                 vectors_field?: string|Param, // Default: "_vectors"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 similarity?: string|Param, // Default: "cosine"
+ *                 http_client?: string|Param, // Default: "http_client"
+ *             }>,
+ *         manticoresearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 table?: string|Param,
+ *                 field?: string|Param, // Default: "_vectors"
+ *                 type?: string|Param, // Default: "hnsw"
+ *                 similarity?: string|Param, // Default: "cosine"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 quantization?: string|Param,
+ *             }>,
+ *         mariadb?: array<string, array{ // Default: []
+ *                 connection?: string|Param,
+ *                 table_name?: string|Param,
+ *                 index_name?: string|Param,
+ *                 vector_field_name?: string|Param,
+ *                 setup_options?: array{
+ *                     dimensions?: int|Param,
+ *                 },
+ *                 distance?: "cosine"|"euclidean"|"distance"|Param, // Distance metric to use for vector similarity search // Default: "euclidean"
+ *             }>,
+ *         meilisearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 index_name?: string|Param,
+ *                 embedder?: string|Param, // Default: "default"
+ *                 vector_field?: string|Param, // Default: "_vectors"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 semantic_ratio?: float|Param, // The ratio between semantic (vector) and full-text search (0.0 to 1.0). Default: 1.0 (100% semantic) // Default: 1.0
+ *             }>,
+ *         memory?: array<string, array{ // Default: []
+ *                 strategy?: string|Param,
+ *             }>,
+ *         milvus?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 database?: string|Param,
+ *                 collection?: string|Param,
+ *                 vector_field?: string|Param, // Default: "_vectors"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 metric_type?: string|Param, // Default: "COSINE"
+ *             }>,
+ *         mongodb?: array<string, array{ // Default: []
+ *                 client?: string|Param, // Default: "MongoDB\\Client"
+ *                 database?: string|Param,
+ *                 collection?: string|Param,
+ *                 index_name?: string|Param,
+ *                 vector_field?: string|Param, // Default: "vector"
+ *                 bulk_write?: bool|Param, // Default: false
+ *                 setup_options?: array{
+ *                     fields?: mixed, // Default: []
+ *                 },
+ *             }>,
+ *         neo4j?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 username?: string|Param,
+ *                 password?: string|Param,
+ *                 database?: string|Param,
+ *                 vector_index_name?: string|Param,
+ *                 node_name?: string|Param,
+ *                 vector_field?: string|Param, // Default: "embeddings"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 distance?: string|Param, // Default: "cosine"
+ *                 quantization?: bool|Param,
+ *             }>,
+ *         opensearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 index_name?: string|Param,
+ *                 vectors_field?: string|Param, // Default: "_vectors"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 space_type?: string|Param, // Default: "l2"
+ *                 http_client?: string|Param, // Default: "http_client"
+ *             }>,
+ *         pinecone?: array<string, array{ // Default: []
+ *                 client?: string|Param, // Default: "Probots\\Pinecone\\Client"
+ *                 index_name?: string|Param,
+ *                 namespace?: string|Param,
+ *                 filter?: list<scalar|Param|null>,
+ *                 top_k?: int|Param,
+ *             }>,
+ *         postgres?: array<string, array{ // Default: []
+ *                 dsn?: string|Param,
+ *                 username?: string|Param,
+ *                 password?: string|Param,
+ *                 table_name?: string|Param,
+ *                 vector_field?: string|Param, // Default: "embedding"
+ *                 distance?: "cosine"|"inner_product"|"l1"|"l2"|Param, // Distance metric to use for vector similarity search // Default: "l2"
+ *                 dbal_connection?: string|Param,
+ *                 setup_options?: array{
+ *                     vector_type?: string|Param, // Default: "vector"
+ *                     vector_size?: int|Param, // Default: 1536
+ *                     index_method?: string|Param, // Default: "ivfflat"
+ *                     index_opclass?: string|Param, // Default: "vector_cosine_ops"
+ *                 },
+ *             }>,
+ *         qdrant?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 collection_name?: string|Param, // The name of the store will be used if the "collection_name" is not set
+ *                 http_client?: string|Param, // Default: "http_client"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 distance?: string|Param, // Default: "Cosine"
+ *                 async?: bool|Param, // Default: false
+ *             }>,
+ *         redis?: array<string, array{ // Default: []
+ *                 connection_parameters?: mixed, // see https://github.com/phpredis/phpredis?tab=readme-ov-file#example-1
+ *                 client?: string|Param, // a service id of a Redis client
+ *                 index_name?: string|Param,
+ *                 key_prefix?: string|Param, // Default: "vector:"
+ *                 distance?: "COSINE"|"L2"|"IP"|Param, // Distance metric to use for vector similarity search // Default: "COSINE"
+ *             }>,
+ *         s3vectors?: array<string, array{ // Default: []
+ *                 client?: string|Param, // Service reference to an existing S3VectorsClient
+ *                 configuration?: array<mixed>,
+ *                 vector_bucket_name?: string|Param,
+ *                 index_name?: string|Param,
+ *                 filter?: array<mixed>,
+ *                 top_k?: int|Param, // Default number of results to return // Default: 3
+ *             }>,
+ *         sqlite?: array<string, array{ // Default: []
+ *                 dsn?: string|Param,
+ *                 connection?: string|Param,
+ *                 table_name?: string|Param,
+ *                 strategy?: string|Param,
+ *                 vec?: bool|Param, // Default: false
+ *                 distance?: "cosine"|"L2"|Param, // Default: "cosine"
+ *                 vector_dimension?: int|Param, // Default: 1536
+ *             }>,
+ *         supabase?: array<string, array{ // Default: []
+ *                 http_client?: string|Param, // Service ID of the HTTP client to use // Default: "http_client"
+ *                 url?: string|Param,
+ *                 api_key?: string|Param,
+ *                 table?: string|Param,
+ *                 vector_field?: string|Param, // Default: "embedding"
+ *                 vector_dimension?: int|Param, // Default: 1536
+ *                 function_name?: string|Param, // Default: "match_documents"
+ *             }>,
+ *         surrealdb?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 username?: string|Param,
+ *                 password?: string|Param,
+ *                 namespace?: string|Param,
+ *                 database?: string|Param,
+ *                 table?: string|Param,
+ *                 vector_field?: string|Param, // Default: "_vectors"
+ *                 strategy?: string|Param, // Default: "cosine"
+ *                 dimensions?: int|Param, // Default: 1536
+ *                 namespaced_user?: bool|Param,
+ *             }>,
+ *         typesense?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 collection?: string|Param,
+ *                 vector_field?: string|Param, // Default: "_vectors"
+ *                 dimensions?: int|Param, // Default: 1536
+ *             }>,
+ *         weaviate?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 http_client?: string|Param, // Default: "http_client"
+ *                 collection?: string|Param, // The name of the store will be used if the "collection" is not set
+ *             }>,
+ *         vektor?: array<string, array{ // Default: []
+ *                 storage_path?: string|Param, // Default: "%kernel.project_dir%/var/share"
+ *                 dimensions?: int|Param, // Default: 1536
+ *             }>,
+ *     },
+ *     message_store?: array{
+ *         cache?: array<string, array{ // Default: []
+ *                 service?: string|Param, // Default: "cache.app"
+ *                 key?: string|Param, // The name of the message store will be used if the key is not set
+ *                 ttl?: int|Param,
+ *             }>,
+ *         cloudflare?: array<string, array{ // Default: []
+ *                 account_id?: string|Param,
+ *                 api_key?: string|Param,
+ *                 namespace?: string|Param,
+ *                 endpoint_url?: string|Param, // If the version of the Cloudflare API is updated, use this key to support it.
+ *             }>,
+ *         doctrine?: array{
+ *             dbal?: array<string, array{ // Default: []
+ *                     connection?: string|Param,
+ *                     table_name?: string|Param, // The name of the message store will be used if the table_name is not set
+ *                 }>,
+ *         },
+ *         meilisearch?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 api_key?: string|Param,
+ *                 index_name?: string|Param,
+ *             }>,
+ *         memory?: array<string, array{ // Default: []
+ *                 identifier?: string|Param,
+ *             }>,
+ *         mongodb?: array<string, array{ // Default: []
+ *                 client?: string|Param, // Default: "MongoDB\\Client"
+ *                 database?: string|Param,
+ *                 collection?: string|Param,
+ *             }>,
+ *         pogocache?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 password?: string|Param,
+ *                 key?: string|Param,
+ *             }>,
+ *         redis?: array<string, array{ // Default: []
+ *                 connection_parameters?: mixed, // see https://github.com/phpredis/phpredis?tab=readme-ov-file#example-1
+ *                 client?: string|Param, // a service id of a Redis client
+ *                 endpoint?: string|Param,
+ *                 index_name?: string|Param,
+ *             }>,
+ *         session?: array<string, array{ // Default: []
+ *                 identifier?: string|Param,
+ *             }>,
+ *         surrealdb?: array<string, array{ // Default: []
+ *                 endpoint?: string|Param,
+ *                 username?: string|Param,
+ *                 password?: string|Param,
+ *                 namespace?: string|Param,
+ *                 database?: string|Param,
+ *                 table?: string|Param,
+ *                 namespaced_user?: bool|Param, // Using a namespaced user is a good practice to prevent any undesired access to a specific table, see https://surrealdb.com/docs/surrealdb/reference-guide/security-best-practices
+ *             }>,
+ *     },
+ *     chat?: array<string, array{ // Default: []
+ *             agent?: string|Param,
+ *             message_store?: string|Param,
+ *         }>,
+ *     vectorizer?: array<string, array{ // Default: []
+ *             platform?: string|Param, // Service name of platform // Default: "Symfony\\AI\\Platform\\PlatformInterface"
+ *             model?: mixed,
+ *         }>,
+ *     indexer?: array<string, array{ // Default: []
+ *             loader?: string|Param, // Service name of loader // Default: null
+ *             source?: mixed, // Source identifier (file path, URL, etc.) or array of sources // Default: null
+ *             transformers?: list<scalar|Param|null>,
+ *             filters?: list<scalar|Param|null>,
+ *             vectorizer?: scalar|Param|null, // Service name of vectorizer // Default: "Symfony\\AI\\Store\\Document\\VectorizerInterface"
+ *             store?: string|Param, // Service name of store // Default: "Symfony\\AI\\Store\\StoreInterface"
+ *         }>,
+ *     retriever?: array<string, array{ // Default: []
+ *             vectorizer?: scalar|Param|null, // Service name of vectorizer // Default: "Symfony\\AI\\Store\\Document\\VectorizerInterface"
+ *             store?: string|Param, // Service name of store // Default: "Symfony\\AI\\Store\\StoreInterface"
+ *         }>,
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1524,6 +2279,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     twig_extra?: TwigExtraConfig,
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
+ *     api_platform?: ApiPlatformConfig,
+ *     ai?: AiConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1540,6 +2297,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
+ *         api_platform?: ApiPlatformConfig,
+ *         ai?: AiConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1554,6 +2313,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         api_platform?: ApiPlatformConfig,
+ *         ai?: AiConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1569,6 +2330,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         api_platform?: ApiPlatformConfig,
+ *         ai?: AiConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
