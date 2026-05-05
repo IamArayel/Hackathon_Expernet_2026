@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — {% block title %}Academ'Île{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{{ importmap('app') }}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<div class="flex min-h-screen">
+    {# Sidebar #}
+    <aside class="w-56 bg-indigo-900 text-white flex flex-col fixed top-0 left-0 h-full z-10">
+        <div class="px-4 py-5 border-b border-indigo-700">
+            <div class="font-bold text-lg leading-tight">Academ'Île</div>
+            <div class="text-xs text-indigo-300 mt-0.5">Administration</div>
+        </div>
+        <nav class="flex-1 px-3 py-4 space-y-0.5">
+            {% set currentPath = app.request.pathInfo %}
+            <a href="{{ path('admin_dashboard') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
+                      {{ currentPath == '/admin' or currentPath == '/admin/' ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
+                Dashboard
+            </a>
+            <a href="{{ path('admin_formation_index') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
+                      {{ '/admin/formation' in currentPath or '/admin/formation' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
+                Formations
+            </a>
+            <a href="{{ path('admin_user_index') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
+                      {{ '/admin/users' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
+                Utilisateurs
+            </a>
+            <a href="{{ path('admin_leaderboard_index') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
+                      {{ '/admin/leaderboard' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
+                Classement
+            </a>
+            <a href="{{ path('admin_ai_settings') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm transition
+                      {{ '/admin/ai' in currentPath ? 'bg-indigo-700 font-medium' : 'hover:bg-indigo-800' }}">
+                Assistant IA
+            </a>
+        </nav>
+        <div class="px-3 py-4 border-t border-indigo-700">
+            <a href="{{ path('home') }}" class="text-xs text-indigo-300 hover:text-white transition">
+                &larr; Site principal
+            </a>
+        </div>
+    </aside>
+
+    {# Main content #}
+    <div class="ml-56 flex-1 flex flex-col min-h-screen">
+        <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+            <h1 class="text-lg font-semibold text-gray-900">{% block page_title %}{% endblock %}</h1>
+            <div class="text-sm text-gray-500">
+                {{ app.user.username }}
+                <span class="ml-2 bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-medium">Admin</span>
+            </div>
+        </header>
+        <main class="flex-1 p-6">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="mb-4 rounded-lg px-4 py-3 text-sm font-medium
+                        {% if type == 'success' %}bg-green-100 text-green-800 border border-green-200
+                        {% elseif type == 'error' %}bg-red-100 text-red-800 border border-red-200
+                        {% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

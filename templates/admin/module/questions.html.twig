@@ -1,0 +1,62 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Questions — {{ module.title }}{% endblock %}
+{% block page_title %}Questions de « {{ module.title }} »{% endblock %}
+
+{% block body %}
+<div class="flex items-center gap-3 mb-4 text-sm">
+    <a href="{{ path('admin_formation_index') }}" class="text-indigo-600 hover:underline">Formations</a>
+    <span class="text-gray-400">/</span>
+    <a href="{{ path('admin_module_index', {id: formation.id}) }}" class="text-indigo-600 hover:underline">{{ formation.title }}</a>
+    <span class="text-gray-400">/</span>
+    <a href="{{ path('admin_module_edit', {formationId: formation.id, id: module.id}) }}" class="text-indigo-600 hover:underline">{{ module.title }}</a>
+    <div class="ml-auto">
+        <a href="{{ path('admin_question_new', {formationId: formation.id, moduleId: module.id}) }}"
+           class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+            + Nouvelle question
+        </a>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left">Question</th>
+                <th class="px-6 py-3 text-left">Type</th>
+                <th class="px-6 py-3 text-left">Difficulté</th>
+                <th class="px-6 py-3 text-left">Bonne réponse</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% set type_labels = {mcq: 'QCM', open: 'Ouverte'} %}
+            {% for question in module.questions %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-3 max-w-xs truncate">{{ question.content }}</td>
+                <td class="px-6 py-3">
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ type_labels[question.type] ?? question.type }}</span>
+                </td>
+                <td class="px-6 py-3 text-gray-500">{{ question.difficulty }}/3</td>
+                <td class="px-6 py-3 text-gray-600 max-w-xs truncate">{{ question.correctAnswer }}</td>
+                <td class="px-6 py-3 text-right flex justify-end gap-2">
+                    <a href="{{ path('admin_question_edit', {formationId: formation.id, moduleId: module.id, id: question.id}) }}"
+                       class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded hover:bg-indigo-100 transition">
+                        Éditer
+                    </a>
+                    <form method="post" action="{{ path('admin_question_delete', {formationId: formation.id, moduleId: module.id, id: question.id}) }}"
+                          onsubmit="return confirm('Supprimer cette question ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_question_' ~ question.id) }}">
+                        <button class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="px-6 py-4 text-gray-400 text-center">Aucune question</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

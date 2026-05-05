@@ -29,7 +29,7 @@ class GamificationService
         return $xp;
     }
 
-    private function updateLevel(User $user): void
+    public function updateLevel(User $user): void
     {
         $newLevel = (int) floor($user->getXp() / self::XP_PER_LEVEL) + 1;
         if ($newLevel > $user->getLevel()) {

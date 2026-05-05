@@ -1,0 +1,60 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Classement{% endblock %}
+{% block page_title %}Gestion du classement{% endblock %}
+
+{% block body %}
+<div class="flex justify-end mb-4">
+    <form method="post" action="{{ path('admin_leaderboard_reset_all') }}"
+          onsubmit="return confirm('Remettre TOUS les XP, niveaux et séries à zéro ? Cette action est irréversible.')">
+        <input type="hidden" name="_token" value="{{ csrf_token('reset_all_xp') }}">
+        <button class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition">
+            Réinitialiser tout le classement
+        </button>
+    </form>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left">#</th>
+                <th class="px-6 py-3 text-left">Utilisateur</th>
+                <th class="px-6 py-3 text-left">Niveau</th>
+                <th class="px-6 py-3 text-left">XP</th>
+                <th class="px-6 py-3 text-left">Série</th>
+                <th class="px-6 py-3 text-right">Réinitialiser</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for user in users %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-3 text-gray-400 font-mono">{{ loop.index }}</td>
+                <td class="px-6 py-3 font-medium">
+                    {{ user.username }}
+                    {% if 'ROLE_ADMIN' in user.roles %}
+                        <span class="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded ml-1">admin</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-3">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">Niv. {{ user.level }}</span>
+                </td>
+                <td class="px-6 py-3 text-indigo-600 font-semibold">{{ user.xp }}</td>
+                <td class="px-6 py-3 text-gray-500">{{ user.streak }} j.</td>
+                <td class="px-6 py-3 text-right">
+                    <form method="post" action="{{ path('admin_leaderboard_reset_user', {id: user.id}) }}"
+                          onsubmit="return confirm('Remettre les XP de {{ user.username }} à zéro ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reset_user_' ~ user.id) }}">
+                        <button class="text-xs bg-orange-50 text-orange-600 px-3 py-1 rounded hover:bg-orange-100 transition">
+                            Reset XP
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="px-6 py-4 text-gray-400 text-center">Aucun utilisateur</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

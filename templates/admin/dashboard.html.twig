@@ -1,0 +1,51 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="text-3xl font-bold text-indigo-600">{{ stats.users }}</div>
+        <div class="text-sm text-gray-500 mt-1">Utilisateurs inscrits</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="text-3xl font-bold text-indigo-600">{{ stats.formations }}</div>
+        <div class="text-sm text-gray-500 mt-1">Formations disponibles</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="text-3xl font-bold text-indigo-600">{{ stats.completions }}</div>
+        <div class="text-sm text-gray-500 mt-1">Modules complétés</div>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100">
+    <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="font-semibold text-gray-900">Top 5 du classement</h2>
+    </div>
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left">#</th>
+                <th class="px-6 py-3 text-left">Utilisateur</th>
+                <th class="px-6 py-3 text-left">Niveau</th>
+                <th class="px-6 py-3 text-left">XP</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+            {% for user in top_users %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-3 font-medium text-gray-500">{{ loop.index }}</td>
+                <td class="px-6 py-3 font-medium">{{ user.username }}</td>
+                <td class="px-6 py-3">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">Niv. {{ user.level }}</span>
+                </td>
+                <td class="px-6 py-3 text-indigo-600 font-semibold">{{ user.xp }} XP</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="px-6 py-4 text-gray-400 text-center">Aucun utilisateur</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

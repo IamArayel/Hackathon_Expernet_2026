@@ -81,7 +81,7 @@ class AuthController extends AbstractController
             )
         ),
         responses: [
-            new OA\Response(response: 302, description: 'Compte créé, redirection vers la connexion'),
+            new OA\Response(response: 302, description: 'Compte créé, connexion automatique et redirection vers l\'accueil'),
             new OA\Response(response: 422, description: 'Données invalides'),
         ]
     )]
