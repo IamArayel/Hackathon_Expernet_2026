@@ -46,7 +46,10 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 > | Variable | Description |
 > | -------- | ----------- |
 > | `APP_SECRET` | Clé secrète Symfony — générer avec `php bin/console secret:generate-tokens` |
-> | `DATABASE_URL` | Déjà configurée pour Docker ; à adapter en dev local |
+> | `DATABASE_URL` | Déjà configurée pour Docker (`db`) ; remplacer `db` par `127.0.0.1` en dev local |
+> | `MARIADB_ROOT_PASSWORD` | Mot de passe root MariaDB (Docker uniquement) |
+> | `MARIADB_USER` | Utilisateur MariaDB — doit correspondre à `DATABASE_URL` |
+> | `MARIADB_PASSWORD` | Mot de passe MariaDB — doit correspondre à `DATABASE_URL` |
 > | `MISTRAL_API_KEY` | Clé API Mistral — à demander au référent |
 
 ### Via Docker (recommandé)
@@ -69,7 +72,10 @@ docker compose exec app composer install
 # 5. Initialiser la base de données
 docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
 
-# 6. Compiler les assets Tailwind
+# 6. (Optionnel) Charger les données de développement
+docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
+
+# 7. Compiler les assets Tailwind
 docker compose exec app php bin/console tailwind:build
 ```
 
@@ -88,7 +94,7 @@ composer install
 
 # 3. Configurer l'environnement
 cp .env.example .env
-# Adapter DATABASE_URL à votre MySQL local, renseigner APP_SECRET et MISTRAL_API_KEY
+# Adapter DATABASE_URL à votre MariaDB local (remplacer "db" par "127.0.0.1"), renseigner APP_SECRET et MISTRAL_API_KEY
 
 # 4. Générer un APP_SECRET
 php bin/console secret:generate-tokens

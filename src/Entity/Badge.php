@@ -26,7 +26,7 @@ class Badge
     private ?string $icon = null;
 
     #[ORM\Column(type: Types::JSON)]
-    private array $condition = [];
+    private array $criteria = [];
 
     public function getId(): ?int { return $this->id; }
 
@@ -39,6 +39,6 @@ class Badge
     public function getIcon(): ?string { return $this->icon; }
     public function setIcon(?string $icon): static { $this->icon = $icon; return $this; }
 
-    public function getCondition(): array { return $this->condition; }
-    public function setCondition(array $condition): static { $this->condition = $condition; return $this; }
+    public function getCriteria(): array { return $this->criteria; }
+    public function setCriteria(array $criteria): static { $this->criteria = $criteria; return $this; }
 }

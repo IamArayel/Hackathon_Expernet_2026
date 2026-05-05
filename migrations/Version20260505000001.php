@@ -21,7 +21,7 @@ final class Version20260505000001 extends AbstractMigration
             name VARCHAR(100) NOT NULL,
             description LONGTEXT DEFAULT NULL,
             icon VARCHAR(255) DEFAULT NULL,
-            `condition` JSON NOT NULL,
+            criteria JSON NOT NULL,
             UNIQUE INDEX UNIQ_FEF0481D5E237E06 (name),
             PRIMARY KEY(id)
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');

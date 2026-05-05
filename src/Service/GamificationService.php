@@ -46,10 +46,10 @@ class GamificationService
                 continue;
             }
 
-            $condition = $badge->getCondition();
-            $earned = match($condition['type'] ?? '') {
-                'xp' => $user->getXp() >= ($condition['value'] ?? PHP_INT_MAX),
-                'level' => $user->getLevel() >= ($condition['value'] ?? PHP_INT_MAX),
+            $criteria = $badge->getCriteria();
+            $earned = match($criteria['type'] ?? '') {
+                'xp' => $user->getXp() >= ($criteria['value'] ?? PHP_INT_MAX),
+                'level' => $user->getLevel() >= ($criteria['value'] ?? PHP_INT_MAX),
                 default => false,
             };
 
