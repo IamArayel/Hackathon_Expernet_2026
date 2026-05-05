@@ -23,21 +23,60 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 | Couche | Technologie |
 | ------ | ----------- |
-| Frontend | Twig + Tailwind CSS + Stimulus (Symfony UX) |
-| Backend | Symfony (PHP 8.2) |
-| Base de données | MySQL 8 |
+| Frontend | Twig + Tailwind CSS v4 + Stimulus (Symfony UX) |
+| Backend | Symfony 8 (PHP 8.2+) |
+| Base de données | MariaDB 11 (Doctrine ORM 3) |
 | IA | Mistral AI (`mistral-small-latest`) |
 | Gamification | XP, niveaux, badges |
+| API doc | NelmioApiDocBundle v5 (Swagger UI — `/api/doc`) |
 
 ## Prérequis
 
 - PHP 8.2+
 - [Composer](https://getcomposer.org/)
 - [Symfony CLI](https://symfony.com/download)
-- MySQL 8+
+- MariaDB 11+
 - Une clé API Mistral AI (gratuite sur [console.mistral.ai](https://console.mistral.ai))
 
 ## Installation
+
+> **Variables d'environnement** — le fichier `.env` n'est pas versionné (repo public).
+> Copier `.env.example` vers `.env` et renseigner les variables suivantes auprès du référent technique de l'équipe (canal privé) :
+>
+> | Variable | Description |
+> | -------- | ----------- |
+> | `APP_SECRET` | Clé secrète Symfony — générer avec `php bin/console secret:generate-tokens` |
+> | `DATABASE_URL` | Déjà configurée pour Docker ; à adapter en dev local |
+> | `MISTRAL_API_KEY` | Clé API Mistral — à demander au référent |
+
+### Via Docker (recommandé)
+
+```bash
+# 1. Cloner le dépôt
+git clone https://github.com/IAmArayel/Hackathon_Expernet_2026.git
+cd Hackathon_Expernet_2026
+
+# 2. Configurer l'environnement
+cp .env.example .env
+# Renseigner APP_SECRET et MISTRAL_API_KEY dans .env
+
+# 3. Démarrer les conteneurs
+docker compose up --build -d
+
+# 4. Installer les dépendances
+docker compose exec app composer install
+
+# 5. Initialiser la base de données
+docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+
+# 6. Compiler les assets Tailwind
+docker compose exec app php bin/console tailwind:build
+```
+
+L'application est accessible sur <http://localhost:8080>.
+Documentation API (Swagger) : <http://localhost:8080/api/doc>
+
+### En local (sans Docker)
 
 ```bash
 # 1. Cloner le dépôt
@@ -48,15 +87,19 @@ cd Hackathon_Expernet_2026
 composer install
 
 # 3. Configurer l'environnement
-cp .env .env.local
-# Renseigner DATABASE_URL et MISTRAL_API_KEY dans .env.local
+cp .env.example .env
+# Adapter DATABASE_URL à votre MySQL local, renseigner APP_SECRET et MISTRAL_API_KEY
 
-# 4. Initialiser la base de données
+# 4. Générer un APP_SECRET
+php bin/console secret:generate-tokens
+
+# 5. Initialiser la base de données
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 
-# 5. Lancer le serveur
+# 6. Lancer le serveur
 symfony server:start
+php bin/console tailwind:build --watch
 ```
 
 L'application est accessible sur https://localhost:8000.
@@ -76,7 +119,7 @@ L'application est accessible sur https://localhost:8000.
 | **Questions** | Module de gestion des questions - récupération et validation depuis le Back-End |
 | **Chatbot** | Interface conversationnelle - envoie les requêtes IA et récupère le niveau de l'utilisateur |
 | **Leaderboard** | Calcule et affiche le classement des apprenants |
-| **Base de données (MariaDB)** | Persistance : enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
+| **Base de données** | Persistance : enregistrement/récupération des questions, sauvegarde du profil utilisateur (XP, streak, avatar) |
 
 #### Flux principaux
 
