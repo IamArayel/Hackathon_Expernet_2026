@@ -32,11 +32,21 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 
 ## Prérequis
 
-- PHP 8.4+
-- [Composer](https://getcomposer.org/)
-- [Symfony CLI](https://symfony.com/download)
-- MariaDB 11+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (inclut Docker Compose)
+- `make` — voir ci-dessous selon l'OS
 - Une clé API Mistral AI (gratuite sur [console.mistral.ai](https://console.mistral.ai))
+
+> **PHP, Composer et MariaDB ne sont pas requis en local** — tout s'exécute dans les conteneurs Docker.
+
+### Installer `make`
+
+| OS | Méthode |
+| -- | ------- |
+| **macOS** | Pré-installé avec Xcode CLT (`xcode-select --install`) |
+| **Linux** | `sudo apt install make` (Debian/Ubuntu) |
+| **Windows** | Utiliser **WSL 2** (recommandé) ou **Git Bash** + `choco install make` |
+
+> **Windows sans WSL** : les commandes `make` peuvent aussi être remplacées par leurs équivalents `docker compose` listés dans le [Makefile](Makefile).
 
 ## Installation
 
@@ -53,6 +63,8 @@ Plateforme EdTech gamifiée qui utilise l'IA pour personnaliser les parcours de 
 > | `MISTRAL_API_KEY` | Clé API Mistral — à demander au référent |
 
 ### Via Docker (recommandé)
+
+> **Windows** : lancer les commandes depuis **WSL 2** ou **Git Bash**, pas depuis PowerShell/CMD.
 
 ```bash
 # 1. Cloner le dépôt
