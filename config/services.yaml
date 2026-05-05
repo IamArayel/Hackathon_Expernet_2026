@@ -17,4 +17,4 @@ services:
 
     App\Service\MistralService:
         arguments:
-            $apiKey: '%env(MISTRAL_API_KEY)%'
+            $fallbackApiKey: '%env(MISTRAL_API_KEY)%'

@@ -18,6 +18,9 @@
                 <a href="{{ path('formation_index') }}" class="hover:text-indigo-200 transition">Formations</a>
                 <a href="{{ path('leaderboard_index') }}" class="hover:text-indigo-200 transition">Classement</a>
                 <a href="{{ path('chatbot_index') }}" class="hover:text-indigo-200 transition">Assistant IA</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}" class="bg-yellow-400 text-indigo-900 rounded px-3 py-1 text-xs font-bold hover:bg-yellow-300 transition">Admin</a>
+                {% endif %}
                 {% if app.user %}
                     <span class="text-indigo-200">{{ app.user.username }}</span>
                     <span class="bg-indigo-500 rounded-full px-2 py-0.5 text-xs">
