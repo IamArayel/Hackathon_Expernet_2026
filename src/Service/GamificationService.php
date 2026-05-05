@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\Module;
 use App\Entity\User;
 use App\Repository\BadgeRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class GamificationService
 {
@@ -13,8 +13,8 @@ class GamificationService
     private const XP_PER_LEVEL = 200;
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
         private readonly BadgeRepository $badgeRepository,
+        private readonly LoggerInterface $logger,
     ) {}
 
     public function rewardModuleCompletion(User $user, Module $module, int $score): int
@@ -26,6 +26,15 @@ class GamificationService
         $this->updateLevel($user);
         $this->checkAndAwardBadges($user);
 
+        $this->logger->info('Module completed', [
+            'user'      => $user->getEmail(),
+            'module_id' => $module->getId(),
+            'score'     => $score,
+            'xp_gained' => $xp,
+            'level'     => $user->getLevel(),
+            'total_xp'  => $user->getXp(),
+        ]);
+
         return $xp;
     }
 
@@ -34,6 +43,10 @@ class GamificationService
         $newLevel = (int) floor($user->getXp() / self::XP_PER_LEVEL) + 1;
         if ($newLevel > $user->getLevel()) {
             $user->setLevel($newLevel);
+            $this->logger->info('Level up', [
+                'user'  => $user->getEmail(),
+                'level' => $newLevel,
+            ]);
         }
     }
 
@@ -55,6 +68,10 @@ class GamificationService
 
             if ($earned) {
                 $user->addBadge($badge);
+                $this->logger->info('Badge awarded', [
+                    'user'  => $user->getEmail(),
+                    'badge' => $badge->getName(),
+                ]);
             }
         }
     }

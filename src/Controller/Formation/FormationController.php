@@ -97,7 +97,6 @@ class FormationController extends AbstractController
         Formation $formation,
         EntityManagerInterface $em,
         UserProgressRepository $progressRepository,
-        GamificationService $gamification,
     ): Response {
         $user = $this->getUser();
         $firstModule = $formation->getModules()->first();
@@ -249,6 +248,7 @@ class FormationController extends AbstractController
     }
 
     #[Route('/module/{id}/complete', name: 'module_complete', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[OA\Post(
         summary: 'Valider un module (JSON)',
         description: 'Marque le module comme complété et retourne les XP gagnés. Endpoint JSON pour intégrations tierces.',
@@ -283,6 +283,7 @@ class FormationController extends AbstractController
         UserProgressRepository $progressRepository,
         GamificationService $gamification,
     ): JsonResponse {
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $score = (int) $request->request->get('score', 0);
 

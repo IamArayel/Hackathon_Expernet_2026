@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\SettingRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AiService
@@ -20,6 +21,7 @@ class AiService
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly SettingRepository $settingRepository,
+        private readonly LoggerInterface $logger,
         private readonly string $fallbackApiKey = '',
     ) {}
 
@@ -56,8 +58,20 @@ class AiService
             ]);
 
             $data = $response->toArray();
+
+            $this->logger->debug('AI request completed', [
+                'user' => $user?->getEmail(),
+                'model' => $model,
+            ]);
+
             return $data['choices'][0]['message']['content'] ?? 'Désolé, je n\'ai pas pu générer de réponse.';
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            $this->logger->error('AI service error', [
+                'error' => $e->getMessage(),
+                'user' => $user?->getEmail(),
+                'model' => $model ?? 'unknown',
+            ]);
+
             return 'Le service IA est temporairement indisponible. Veuillez réessayer.';
         }
     }

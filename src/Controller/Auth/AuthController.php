@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\Auth\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -91,6 +92,7 @@ class AuthController extends AbstractController
         EntityManagerInterface $em,
         UserAuthenticatorInterface $userAuthenticator,
         FormLoginAuthenticator $formLoginAuthenticator,
+        LoggerInterface $logger,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('home');
@@ -104,6 +106,8 @@ class AuthController extends AbstractController
             $user->setPassword($hasher->hashPassword($user, $form->get('plainPassword')->getData()));
             $em->persist($user);
             $em->flush();
+
+            $logger->info('New user registered', ['email' => $user->getEmail()]);
 
             $this->addFlash('success', 'Compte créé ! Bienvenue sur Academ\'Île.');
 

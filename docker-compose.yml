@@ -1,4 +1,6 @@
 services:
+
+  # ===== APPLICATION PHP =====
   app:
     build:
       context: .
@@ -8,12 +10,15 @@ services:
       - /var/www/html/vendor
     environment:
       APP_ENV: dev
-      DATABASE_URL: "mysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE}?serverVersion=mariadb-11.4.5&charset=utf8mb4"
+      DATABASE_URL: "mysql://${MYSQL_USER1}:${MYSQL_PASSWORD1}@mariadb1:3306/${MYSQL_DATABASE1}?serverVersion=mariadb-11.4.5&charset=utf8mb4"
       NVIDIA_API_KEY: ${NVIDIA_API_KEY}
     depends_on:
-      db:
+      mariadb1:
         condition: service_healthy
+    networks:
+      - galera
 
+  # ===== NGINX =====
   nginx:
     image: nginx:1.27-alpine
     ports:
@@ -23,23 +28,119 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app
+    networks:
+      - galera
 
-  db:
-    image: mariadb:11
-    ports:
-      - "${DB_PORT}:3306"
+  # ===== GALERA NODE 1 (bootstrap) =====
+  mariadb1:
+    image: mariadb:11.4
+    container_name: mariadb1
+    restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD1}
+      MYSQL_DATABASE: ${MYSQL_DATABASE1}
+      MYSQL_USER: ${MYSQL_USER1}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD1}
+    ports:
+      - "${DB_PORT1}:3306"
+    command: >
+      --server-id=1
+      --wsrep-on=ON
+      --wsrep-provider=/usr/lib/galera/libgalera_smm.so
+      --wsrep-cluster-name=galera_cluster
+      --wsrep-cluster-address=gcomm://
+      --wsrep-node-name=node1
+      --wsrep-node-address=mariadb1
+      --binlog-format=ROW
+      --default-storage-engine=InnoDB
+      --innodb-autoinc-lock-mode=2
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data1:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 30s
+    networks:
+      - galera
+
+  # ===== GALERA NODE 2 =====
+  mariadb2:
+    image: mariadb:11.4
+    container_name: mariadb2
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD2}
+        MYSQL_DATABASE: ${MYSQL_DATABASE2}
+        MYSQL_USER: ${MYSQL_USER2}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD2}
+    ports:
+      - "${DB_PORT2}:3306"
+    command: >
+      --server-id=2
+      --wsrep-on=ON
+      --wsrep-provider=/usr/lib/galera/libgalera_smm.so
+      --wsrep-cluster-name=galera_cluster
+      --wsrep-cluster-address=gcomm://mariadb1
+      --wsrep-node-name=node2
+      --wsrep-node-address=mariadb2
+      --binlog-format=ROW
+      --default-storage-engine=InnoDB
+      --innodb-autoinc-lock-mode=2
+    volumes:
+      - db_data2:/var/lib/mysql
+    depends_on:
+      mariadb1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - galera
+
+  # ===== GALERA NODE 3 =====
+  mariadb3:
+    image: mariadb:11.4
+    container_name: mariadb3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${DB_PORT3}:3306"
+    command: >
+      --server-id=3
+      --wsrep-on=ON
+      --wsrep-provider=/usr/lib/galera/libgalera_smm.so
+      --wsrep-cluster-name=galera_cluster
+      --wsrep-cluster-address=gcomm://mariadb1
+      --wsrep-node-name=node3
+      --wsrep-node-address=mariadb3
+      --binlog-format=ROW
+      --default-storage-engine=InnoDB
+      --innodb-autoinc-lock-mode=2
+    volumes:
+      - db_data3:/var/lib/mysql
+    depends_on:
+      mariadb1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - galera
 
 volumes:
-  db_data:
+  db_data1:
+  db_data2:
+  db_data3:
+
+networks:
+  galera:
+    driver: bridge
