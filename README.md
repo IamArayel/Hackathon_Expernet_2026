@@ -126,6 +126,7 @@ php bin/console tailwind:build --watch
 ```
 
 L'application est accessible sur https://localhost:8000.
+Documentation API (Swagger) : <https://localhost:8000/api/doc>
 
 ## Architecture
 
