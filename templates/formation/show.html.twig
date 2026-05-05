@@ -34,7 +34,8 @@
     <h2 class="text-xl font-semibold mb-4">Modules ({{ formation.modules|length }})</h2>
     <div class="space-y-3">
         {% for module in formation.modules %}
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 px-5 py-4 flex items-center justify-between">
+            <a href="{{ path('formation_module_show', {id: formation.id, moduleId: module.id}) }}"
+               class="bg-white rounded-lg shadow-sm border border-gray-100 px-5 py-4 flex items-center justify-between hover:border-indigo-300 hover:shadow transition">
                 <div>
                     <span class="text-xs text-gray-400 mr-2">{{ loop.index }}.</span>
                     <span class="font-medium text-gray-800">{{ module.title }}</span>
@@ -44,8 +45,10 @@
                 </div>
                 {% if module.id in completedModuleIds %}
                     <span class="text-green-500 text-sm font-semibold">✓ Complété</span>
+                {% else %}
+                    <span class="text-xs text-indigo-500 font-medium">Accéder →</span>
                 {% endif %}
-            </div>
+            </a>
         {% else %}
             <p class="text-gray-400 text-sm">Aucun module pour l'instant.</p>
         {% endfor %}
