@@ -1,9 +1,12 @@
-<?php 
+<?php
+
 namespace App\Controller;
 
 use App\Entity\Conversation;
 use App\Entity\Message;
+use App\Entity\Question2;
 use App\Repository\MessageRepository;
+use App\Repository\ScoreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\AI\Agent\AgentInterface;
 use Symfony\AI\Platform\Message\MessageBag;
@@ -44,11 +47,11 @@ final class ChatController extends AbstractController
 
     #[Route('/chat/{id}', name: 'app_chat_ask', methods: ['POST'])]
     public function ask(
-        Conversation $conversation, 
-        Request $request, 
-        MessageRepository $repo, 
+        Conversation $conversation,
+        Request $request,
+        MessageRepository $repo,
         EntityManagerInterface $em,
-        #[Target('chatbot_assistant')] AgentInterface $chatbotAgent 
+        #[Target('chatbot_assistant')] AgentInterface $chatbotAgent
     ): Response {
         $userText = $request->request->get('message');
 
@@ -95,5 +98,60 @@ final class ChatController extends AbstractController
         return $this->json([
             'response' => $aiContent
         ]);
+    }
+
+    #[Route('/quiz/generate', name: 'app_quiz_generate', methods: ['POST'])]
+    public function generate(
+        Request $request,
+        EntityManagerInterface $em,
+        ScoreRepository $scoreRepo,
+        #[Target('quiz_generator')] AgentInterface $quizAgent
+    ): Response {
+        $theme = $request->request->get('theme', 'Culture Générale');
+
+        // On récupère le niveau de l'utilisateur via son Score
+        $scoreEntity = $scoreRepo->findOneBy(['utilisateur' => $this->getUser()]);
+        $score = $scoreEntity ? $scoreEntity->getScore() : 0;
+
+        // Prompt court et direct
+        $prompt = sprintf(
+            "Génère 5 questions sur le thème '%s'. Niveau de difficulté basé sur un score de %d. Format JSON uniquement.",
+            $theme,
+            $score
+        );
+
+        // 1. On crée le sac de messages vide
+        $messageBag = new MessageBag();
+
+        // 2. On crée le message utilisateur
+        $userMessage = new UserMessage(new Text($prompt));
+
+        // 3. On l'ajoute via la méthode add() (qui accepte le type MessageInterface)
+        $messageBag->add($userMessage);
+
+        // 4. On passe l'objet MessageBag complet au call
+        $result = $quizAgent->call($messageBag);
+        $content = (string) $result->getContent();
+
+        // On décode le JSON
+        $data = json_decode(preg_replace('/```json|```/', '', $content), true);
+
+        if (!$data) {
+            return $this->json(['error' => 'Échec génération IA'], 500);
+        }
+
+        // Sauvegarde en BDD (Question2)
+        foreach ($data as $item) {
+            $q = new Question2();
+            $q->setIntitule($item['question']);
+            $q->setChoix($item['reponses']);
+            $q->setIndexCorrect($item['correct']);
+            // On pourrait ajouter $q->setUtilisateur($this->getUser());
+            $em->persist($q);
+        }
+
+        $em->flush();
+
+        return $this->json($data);
     }
 }
