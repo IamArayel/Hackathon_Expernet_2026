@@ -18,3 +18,7 @@ services:
     App\Service\AiService:
         arguments:
             $fallbackApiKey: '%env(NVIDIA_API_KEY)%'
+
+    Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator:
+        alias: security.authenticator.form_login.main
+        public: true
