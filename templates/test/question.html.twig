@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test Génération Questions{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>🧪 Test Génération de Questions</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Paramètres</h5>
+                </div>
+                <div class="card-body">
+                    <form id="testForm">
+                        <div class="mb-3">
+                            <label for="moduleId" class="form-label">ID du Module</label>
+                            <input type="number" class="form-control" id="moduleId" placeholder="1" value="1" required>
+                            <small class="text-muted">Entrez l'ID d'un module existant</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Générer Questions</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5>Résultat</h5>
+                </div>
+                <div class="card-body" id="result" style="max-height: 500px; overflow-y: auto;">
+                    <p class="text-muted">Les questions générées apparaîtront ici...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('testForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const moduleId = document.getElementById('moduleId').value;
+    const resultDiv = document.getElementById('result');
+    
+    resultDiv.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Chargement...</span></div> Génération en cours...';
+    
+    try {
+        const response = await fetch(`/quiz/generate/${moduleId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            resultDiv.innerHTML = `<div class="alert alert-danger"><strong>Erreur:</strong> ${data.error || 'Erreur inconnue'}</div>`;
+            return;
+        }
+        
+        let html = `<div class="alert alert-success"><strong>Module:</strong> ${data.module}</div>`;
+        html += '<div class="list-group">';
+        
+        data.questions.forEach((q, index) => {
+            html += `
+                <div class="list-group-item">
+                    <h6 class="mb-2"><strong>Question ${index + 1}:</strong> ${q.question}</h6>
+                    <div class="ms-3 mb-2">
+                        <p><strong>Options:</strong></p>
+                        <ul class="list-unstyled">
+                            ${q.reponses.map((r, i) => `
+                                <li>
+                                    <span class="badge ${i === q.correct ? 'bg-success' : 'bg-secondary'} me-2">
+                                        ${i === q.correct ? '✓ Correct' : i}
+                                    </span>
+                                    ${r}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        resultDiv.innerHTML = html;
+        
+    } catch (error) {
+        resultDiv.innerHTML = `<div class="alert alert-danger"><strong>Erreur:</strong> ${error.message}</div>`;
+    }
+});
+</script>
+
+<style>
+    .list-group-item {
+        border-left: 4px solid #007bff;
+        padding-left: 1rem;
+    }
+</style>
+{% endblock %}
