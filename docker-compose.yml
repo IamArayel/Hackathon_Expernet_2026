@@ -9,7 +9,8 @@ services:
       - .:/var/www/html
       - vendor_data:/var/www/html/vendor
     environment:
-      APP_ENV: dev
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
       DATABASE_URL: "mysql://${MYSQL_USER1}:${MYSQL_PASSWORD1}@mariadb1:3306/${MYSQL_DATABASE1}?serverVersion=mariadb-11.4.5&charset=utf8mb4"
       NVIDIA_API_KEY: ${NVIDIA_API_KEY}
     depends_on:
