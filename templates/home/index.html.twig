@@ -4,27 +4,27 @@
 {% block body %}
 
 {# ——— HERO ——— #}
-<div class="hero-volcanic relative overflow-hidden -mx-6 px-6 py-24 text-center mb-2">
+<div class="hero-volcanic relative overflow-hidden -mx-4 px-4 sm:-mx-6 sm:px-6 py-16 sm:py-24 text-center mb-2">
     <div class="inline-block bg-lava/10 border border-lava/30 text-lava text-xs font-semibold px-5 py-2 rounded-full mb-8 tracking-widest uppercase">
         🌋 &nbsp; Île de la Réunion · Apprendre autrement
     </div>
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-5 leading-tight" style="font-family:'Poppins',sans-serif">
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-5 leading-tight" style="font-family:'Poppins',sans-serif">
         Le savoir s'éveille<br>
         <span class="text-lava">comme un volcan</span>
     </h1>
-    <p class="text-gray-500 text-lg max-w-lg mx-auto mb-10 leading-relaxed">
+    <p class="text-gray-500 text-base sm:text-lg max-w-lg mx-auto mb-10 leading-relaxed px-2">
         Des parcours de formation générés par l'IA. Progressez module par module, gagnez de l'XP et montez en niveau.
     </p>
 
     {% if not app.user %}
-        <div class="flex items-center justify-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
             <a href="{{ path('auth_register') }}"
-               class="bg-lava hover:bg-[#d44d1b] text-white px-9 py-4 rounded-xl font-bold transition lava-glow"
+               class="w-full sm:w-auto bg-lava hover:bg-[#d44d1b] text-white px-9 py-4 rounded-xl font-bold transition lava-glow text-center"
                style="font-family:'Poppins',sans-serif">
                 Commencer l'aventure
             </a>
             <a href="{{ path('formation_index') }}"
-               class="border border-cinder text-gray-400 hover:border-lava hover:text-lava px-9 py-4 rounded-xl font-semibold transition">
+               class="w-full sm:w-auto border border-cinder text-gray-400 hover:border-lava hover:text-lava px-9 py-4 rounded-xl font-semibold transition text-center">
                 Voir les formations
             </a>
         </div>
@@ -39,7 +39,7 @@
 
 {# ——— STATS BAR ——— #}
 <div class="divider-lava my-0"></div>
-<div class="bg-[#0f0f0f] border-b border-smoke -mx-6 px-6 py-8 mb-12">
+<div class="bg-[#0f0f0f] border-b border-smoke -mx-4 px-4 sm:-mx-6 sm:px-6 py-8 mb-12">
     <div class="max-w-lg mx-auto grid grid-cols-3 gap-6 text-center">
         <div>
             <div class="text-3xl font-bold text-lava" style="font-family:'Poppins',sans-serif">{{ formations|length }}</div>

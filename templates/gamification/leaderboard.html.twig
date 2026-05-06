@@ -5,14 +5,14 @@
 <div class="max-w-5xl mx-auto py-8">
     
     {# Header #}
-    <div class="flex items-end justify-between mb-12">
+    <div class="flex items-end justify-between mb-10 sm:mb-12">
         <div>
             <span class="text-lava uppercase tracking-[0.3em] text-xs font-bold">Hall of Fame</span>
-            <h1 class="text-4xl font-extrabold text-white mt-2" style="font-family:'Poppins',sans-serif">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mt-2" style="font-family:'Poppins',sans-serif">
                 Classement <span class="text-lava">volcanique</span>
             </h1>
             <p class="text-gray-600 text-sm mt-1">Chaque module complété te rapporte de l'XP. Deviens la légende de l'île.</p>
-            <p class="text-gray-500 text-sm mt-2 italic">"Seuls ceux qui bravent le magma atteignent le sommet."</p>
+            <p class="hidden sm:block text-gray-500 text-sm mt-2 italic">"Seuls ceux qui bravent le magma atteignent le sommet."</p>
         </div>
         <div class="hidden md:block text-6xl opacity-20 select-none">🏆</div>
     </div>
@@ -69,18 +69,18 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-white/5 text-gray-500">
-                        <th class="px-8 py-5 text-xs font-bold uppercase tracking-[0.2em]">Rang</th>
-                        <th class="px-8 py-5 text-xs font-bold uppercase tracking-[0.2em]">Explorateur</th>
-                        <th class="px-8 py-5 text-center text-xs font-bold uppercase tracking-[0.2em]">Niveau</th>
-                        <th class="px-8 py-5 text-right text-xs font-bold uppercase tracking-[0.2em]">Expérience</th>
-                        <th class="px-8 py-5 text-right text-xs font-bold uppercase tracking-[0.2em]">Badges</th>
+                        <th class="px-4 sm:px-8 py-4 sm:py-5 text-xs font-bold uppercase tracking-[0.2em]">Rang</th>
+                        <th class="px-4 sm:px-8 py-4 sm:py-5 text-xs font-bold uppercase tracking-[0.2em]">Explorateur</th>
+                        <th class="hidden sm:table-cell px-4 sm:px-8 py-4 sm:py-5 text-center text-xs font-bold uppercase tracking-[0.2em]">Niveau</th>
+                        <th class="px-4 sm:px-8 py-4 sm:py-5 text-right text-xs font-bold uppercase tracking-[0.2em]">XP</th>
+                        <th class="hidden md:table-cell px-4 sm:px-8 py-4 sm:py-5 text-right text-xs font-bold uppercase tracking-[0.2em]">Badges</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for user in topUsers %}
                         {% set isMe = currentUser and currentUser.id == user.id %}
                         <tr class="transition-all duration-300 {{ isMe ? 'table-row-me' : 'hover:bg-white/[0.02]' }}">
-                            <td class="px-8 py-5">
+                            <td class="px-4 sm:px-8 py-4 sm:py-5">
                                 <div class="flex items-center">
                                     {% if loop.index == 1 %}
                                         <span class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-500 flex items-center justify-center font-bold border border-yellow-500/30">1</span>
@@ -93,29 +93,29 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td class="px-8 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-gray-900 border border-white/10 flex items-center justify-center text-xs shadow-inner">
+                            <td class="px-4 sm:px-8 py-4 sm:py-5">
+                                <div class="flex items-center gap-2 sm:gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-gray-900 border border-white/10 flex items-center justify-center text-xs shadow-inner shrink-0">
                                         {{ user.avatar ? '🖼️' : '👤' }}
                                     </div>
-                                    <span class="font-bold {{ isMe ? 'text-white' : 'text-gray-300' }}">
+                                    <span class="font-bold {{ isMe ? 'text-white' : 'text-gray-300' }} truncate max-w-[120px] sm:max-w-none">
                                         {{ user.username }}
                                         {% if isMe %}
-                                            <span class="ml-2 text-[9px] bg-lava text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">Vous</span>
+                                            <span class="ml-1 text-[9px] bg-lava text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">Vous</span>
                                         {% endif %}
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-8 py-5 text-center">
+                            <td class="hidden sm:table-cell px-4 sm:px-8 py-4 sm:py-5 text-center">
                                 <span class="bg-gray-900 text-lava text-xs font-bold px-3 py-1 rounded-lg border border-lava/20">
                                     LVL {{ user.level }}
                                 </span>
                             </td>
-                            <td class="px-8 py-5 text-right">
+                            <td class="px-4 sm:px-8 py-4 sm:py-5 text-right">
                                 <span class="font-mono font-bold text-gray-200">{{ user.xp|number_format(0, '.', ' ') }}</span>
                                 <span class="text-lava ml-1 text-[10px] font-bold">XP</span>
                             </td>
-                            <td class="px-8 py-5 text-right">
+                            <td class="hidden md:table-cell px-4 sm:px-8 py-4 sm:py-5 text-right">
                                 <div class="flex justify-end -space-x-2">
                                     {% for i in 1..min(user.badges|length, 3) %}
                                         <div class="w-6 h-6 rounded-full bg-magma border border-lava/30 flex items-center justify-center text-[10px] shadow-lg">⭐</div>
