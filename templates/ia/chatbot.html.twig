@@ -3,16 +3,11 @@
 
 {% block body %}
 <style>
-
-/* Fond de page dynamique */
 body {
     background: radial-gradient(circle at center, #1a0a05 0%, #050505 100%);
     background-attachment: fixed;
-    position: relative;
     overflow-x: hidden;
 }
-
-/* Effet de lueur diffuse en arrière-plan */
 body::before {
     content: "";
     position: absolute;
@@ -23,60 +18,6 @@ body::before {
     background: radial-gradient(circle, rgba(241, 90, 34, 0.05) 0%, transparent 70%);
     z-index: -1;
 }
-
-/* Optimisation de la boîte de chat pour le fond sombre */
-.chat-box {
-    background: rgba(15, 15, 15, 0.8) !important;
-    backdrop-filter: blur(12px); /* Effet verre fumé */
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-/* Chat container */
-.chat-box {
-    background: linear-gradient(145deg, #0f0f0f, #080808);
-    border: 1px solid #2a2a2a;
-    box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
-}
-
-/* Input */
-.input-volcanic {
-    width: 100%;
-    background: #0f0f0f;
-    border: 1px solid #2a2a2a;
-    border-radius: 1rem;
-    padding: 0.6rem 1rem;
-    color: white;
-    font-size: 0.9rem;
-    transition: all 0.25s ease;
-}
-
-.input-volcanic::placeholder {
-    color: #555;
-}
-
-.input-volcanic:focus {
-    outline: none;
-    border-color: #f15a22;
-    background: #121212;
-    box-shadow:
-        0 0 0 1px rgba(241, 90, 34, 0.5),
-        0 0 20px rgba(241, 90, 34, 0.25);
-}
-
-/* Messages */
-.bubble-user {
-    background: linear-gradient(135deg, #f15a22, #ff6b2d);
-    color: white;
-    border-radius: 14px 14px 4px 14px;
-    box-shadow: 0 0 12px rgba(241, 90, 34, 0.4);
-}
-
-.bubble-bot {
-    background: #141414;
-    color: #e5e5e5;
-    border: 1px solid #2a2a2a;
-    border-radius: 14px 14px 14px 4px;
-}
-
 </style>
 
 <div class="max-w-2xl mx-auto">

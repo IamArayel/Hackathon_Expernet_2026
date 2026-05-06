@@ -5,7 +5,7 @@
 {% block body %}
 <div class="min-h-screen bg-[#0a0a0a] text-white font-body pb-20">
     <!-- Header Hero -->
-    <div class="relative py-16 hero-bg border-b border-[#1e1e1e] overflow-hidden">
+    <div class="relative py-16 hero-volcanic hero-bg border-b border-[#1e1e1e] overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
             <div class="inline-block bg-[#f15a22]/10 border border-[#f15a22]/30 text-[#f15a22] text-xs font-bold px-5 py-2 rounded-full mb-6 tracking-widest uppercase">
                 🌋 Forge Alchimique de l'IA
@@ -94,22 +94,6 @@
     </div>
 </div>
 
-<style>
-    .hero-bg {
-        background: radial-gradient(ellipse at 50% 110%, rgba(241, 90, 34, 0.15) 0%, transparent 70%), linear-gradient(180deg, #0a0a0a 0%, #110805 100%);
-    }
-    .lava-glow { box-shadow: 0 0 20px rgba(241, 90, 34, 0.3); }
-    .card-hover { transition: all 0.3s ease; }
-    .card-hover:hover { border-color: #f15a22; box-shadow: 0 0 25px rgba(241, 90, 34, 0.1); transform: translateY(-3px); }
-    .divider-lava { background: linear-gradient(90deg, transparent, #f15a22, transparent); height: 1px; opacity: 0.5; }
-    
-    /* Animation pour le loader */
-    @keyframes pulse-lava {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-    .loading-lava { animation: pulse-lava 1.5s infinite; color: #f15a22; }
-</style>
 
 <script>
 // --- LOGIQUE GÉNÉRATION QUESTIONS ---
