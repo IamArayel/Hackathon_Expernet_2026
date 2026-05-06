@@ -13,7 +13,7 @@
 <body class="min-h-screen bg-[#0a0a0a] text-white">
 
     <nav class="border-b border-[#1e1e1e] bg-[#0a0a0a]/95 backdrop-blur-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <a href="{{ path('home') }}" class="flex items-center gap-3 group">
                 <div class="w-9 h-9 bg-lava rounded-xl flex items-center justify-center lava-glow-sm text-white text-lg transition group-hover:scale-105">
                     🌋
@@ -21,7 +21,8 @@
                 <span class="text-xl font-bold" style="font-family:'Poppins',sans-serif">Academ'<span class="text-lava">Île</span></span>
             </a>
 
-            <div class="flex items-center gap-7 text-sm font-medium">
+            {# Desktop menu #}
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
                 <a href="{{ path('formation_index') }}" class="text-gray-400 hover:text-lava transition">Formations</a>
                 <a href="{{ path('leaderboard_index') }}" class="text-gray-400 hover:text-lava transition">Classement</a>
                 <a href="{{ path('chatbot_index') }}" class="text-gray-400 hover:text-lava transition">Assistant IA</a>
@@ -34,12 +35,14 @@
                 {% endif %}
 
                 {% if app.user %}
-                    <div class="flex items-center gap-2 bg-[#141414] border border-cinder rounded-full px-4 py-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-lava"></span>
-                        <span class="text-lava text-xs font-bold">{{ app.user.username }}</span>
-                        <span class="text-gray-700">·</span>
-                        <span class="text-gray-400 text-xs">Niv. {{ app.user.level }} — {{ app.user.xp }} XP</span>
-                    </div>
+                    <a href="{{ path('app_profile') }}" class="text-gray-400 hover:text-lava transition">
+                        <div class="flex items-center gap-2 bg-[#141414] border border-cinder rounded-full px-4 py-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-lava"></span>
+                            <span class="text-lava text-xs font-bold">{{ app.user.username }}</span>
+                            <span class="text-gray-700">·</span>
+                            <span class="text-gray-400 text-xs">Niv. {{ app.user.level }} — {{ app.user.xp }} XP</span>
+                        </div>
+                    </a>
                     <a href="{{ path('auth_logout') }}" class="text-gray-500 hover:text-red-400 transition text-xs">Déconnexion</a>
                 {% else %}
                     <a href="{{ path('auth_login') }}" class="text-gray-400 hover:text-lava transition">Connexion</a>
@@ -49,10 +52,58 @@
                     </a>
                 {% endif %}
             </div>
+
+            {# Hamburger button (mobile) #}
+            <button id="nav-toggle" aria-label="Menu"
+                    class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-lg hover:bg-white/5 transition">
+                <span class="block w-5 h-0.5 bg-gray-400 transition-all duration-300"></span>
+                <span class="block w-5 h-0.5 bg-gray-400 transition-all duration-300"></span>
+                <span class="block w-5 h-0.5 bg-gray-400 transition-all duration-300"></span>
+            </button>
+        </div>
+
+        {# Mobile menu #}
+        <div id="nav-menu" class="hidden md:hidden border-t border-[#1e1e1e] px-4 py-4 space-y-1 bg-[#0a0a0a]">
+            <a href="{{ path('formation_index') }}" class="block text-gray-400 hover:text-lava transition py-2 text-sm font-medium">Formations</a>
+            <a href="{{ path('leaderboard_index') }}" class="block text-gray-400 hover:text-lava transition py-2 text-sm font-medium">Classement</a>
+            <a href="{{ path('chatbot_index') }}" class="block text-gray-400 hover:text-lava transition py-2 text-sm font-medium">Assistant IA</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_dashboard') }}"
+                   class="block mt-2 text-center bg-lava text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-[#d44d1b] transition">
+                    Admin
+                </a>
+            {% endif %}
+            <div class="pt-3 mt-2 border-t border-[#1e1e1e]">
+                {% if app.user %}
+                    <a href="{{ path('app_profile') }}" class="flex items-center gap-2 py-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-lava shrink-0"></span>
+                        <span class="text-lava text-sm font-bold">{{ app.user.username }}</span>
+                        <span class="text-gray-500 text-xs ml-1">Niv. {{ app.user.level }} — {{ app.user.xp }} XP</span>
+                    </a>
+                    <a href="{{ path('auth_logout') }}" class="block text-red-400 hover:text-red-300 transition text-sm py-1">Déconnexion</a>
+                {% else %}
+                    <div class="flex gap-3 pt-1">
+                        <a href="{{ path('auth_login') }}"
+                           class="flex-1 text-center text-gray-400 border border-[#2a2a2a] rounded-xl py-2.5 text-sm font-medium hover:border-lava hover:text-lava transition">
+                            Connexion
+                        </a>
+                        <a href="{{ path('auth_register') }}"
+                           class="flex-1 text-center bg-lava text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-[#d44d1b] transition">
+                            S'inscrire
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-8">
+    <script>
+    document.getElementById('nav-toggle').addEventListener('click', function () {
+        document.getElementById('nav-menu').classList.toggle('hidden');
+    });
+    </script>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {% for type, messages in app.flashes %}
             {% for message in messages %}
                 <div class="mb-5 rounded-xl px-5 py-3 text-sm font-medium border
@@ -69,3 +120,7 @@
 
 </body>
 </html>
+<script src="/tailwind-config.js"></script>
+<script src="https://cdn.tailwindcss.com">
+
+</script>

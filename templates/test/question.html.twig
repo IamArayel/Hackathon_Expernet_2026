@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laboratoire de Génération — Academ'Île{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-[#0a0a0a] text-white font-body pb-20">
+    <!-- Header Hero -->
+    <div class="relative py-16 hero-volcanic hero-bg border-b border-[#1e1e1e] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 text-center relative z-10">
+            <div class="inline-block bg-[#f15a22]/10 border border-[#f15a22]/30 text-[#f15a22] text-xs font-bold px-5 py-2 rounded-full mb-6 tracking-widest uppercase">
+                🌋 Forge Alchimique de l'IA
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold font-heading mb-4">
+                Génération de <span class="text-[#f15a22]">Savoir</span>
+            </h1>
+            <p class="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base px-2">
+                Utilisez la puissance du volcan pour forger de nouveaux modules pédagogiques ou peupler vos quiz instantanément.
+            </p>
+        </div>
+        <div class="divider-lava absolute bottom-0 left-0 w-full"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-0 sm:px-6 mt-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            
+            <!-- SECTION 1 : GÉNÉRATION DE MODULES -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 bg-[#f15a22] rounded-lg flex items-center justify-center lava-glow">
+                        <span class="text-white text-sm">📚</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-heading">Forger un Nouveau Module</h2>
+                </div>
+                
+                <div class="bg-[#111] border border-[#222] rounded-2xl p-8 card-hover shadow-xl">
+                    <form id="moduleForm" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">ID de la Formation</label>
+                            <input type="number" id="formationId" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:border-[#f15a22] focus:ring-1 focus:ring-[#f15a22] outline-none transition" value="1" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Thématique du Module</label>
+                            <select id="moduleTheme" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:border-[#f15a22] outline-none transition">
+                                <option value="Histoire de la Réunion">Histoire de la Réunion</option>
+                                <option value="Faune et Flore Endémique">Faune et Flore Endémique</option>
+                                <option value="Géologie Volcanique">Géologie Volcanique</option>
+                                <option value="Cuisine Créole">Cuisine Créole</option>
+                                <option value="Économie Insulaire">Économie Insulaire</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-[#f15a22] hover:bg-[#d44d1b] text-white font-bold py-4 rounded-xl transition lava-glow flex items-center justify-center gap-2">
+                            <span>🔥</span> Générer le Module
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : GÉNÉRATION DE QUESTIONS -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 bg-ember rounded-lg flex items-center justify-center lava-glow">
+                        <span class="text-white text-sm">❓</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-heading">Extraire des Questions</h2>
+                </div>
+                
+                <div class="bg-[#111] border border-[#222] rounded-2xl p-8 card-hover shadow-xl">
+                    <form id="questionForm" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">ID du Module Cible</label>
+                            <input type="number" id="moduleId" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:border-ember outline-none transition" value="1" required>
+                        </div>
+                        <button type="submit" class="w-full border border-[#f15a22] text-[#f15a22] hover:bg-[#f15a22] hover:text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2">
+                            <span>✨</span> Générer 5 Questions QCM
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ZONE DE RÉSULTATS -->
+        <div class="mt-16 bg-[#0f0f0f] border border-[#1a1a1a] rounded-3xl p-8 min-h-[300px]">
+            <div class="flex items-center justify-between mb-8 border-b border-[#222] pb-4">
+                <h3 class="text-xl font-bold font-heading flex items-center gap-2">
+                    <span id="resultIcon">📡</span> Console de Sortie
+                </h3>
+                <span id="statusBadge" class="hidden text-[10px] font-bold uppercase px-3 py-1 rounded-full bg-[#f15a22]/20 text-[#f15a22] border border-[#f15a22]/30">En cours...</span>
+            </div>
+            <div id="resultContent" class="space-y-4">
+                <p class="text-gray-600 italic">En attente d'une action de forge...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+// --- LOGIQUE GÉNÉRATION QUESTIONS ---
+document.getElementById('questionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const moduleId = document.getElementById('moduleId').value;
+    startLoading("Génération des questions...");
+
+    try {
+        const response = await fetch(`/quiz/generate/${moduleId}`, { method: 'POST' });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error || 'Erreur lors de la forge');
+
+        let html = `<div class="p-4 bg-green-500/10 border border-green-500/30 rounded-xl mb-6 text-green-400 font-bold">✓ Succès : Questions forgées pour "${data.module}"</div>`;
+        data.questions.forEach((q, i) => {
+            html += `
+                <div class="bg-[#161616] border-l-4 border-[#f15a22] p-5 rounded-r-xl mb-4">
+                    <p class="text-gray-400 text-xs font-bold uppercase mb-2">Question ${i+1}</p>
+                    <h4 class="text-white font-semibold mb-4">${q.question}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        ${q.reponses.map((r, idx) => `
+                            <div class="px-4 py-2 rounded-lg text-sm ${idx === q.correct ? 'bg-green-500/20 border border-green-500/40 text-green-300' : 'bg-[#0a0a0a] border border-[#222] text-gray-500'}">
+                                ${r}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+        });
+        stopLoading(html, "❓");
+    } catch (err) {
+        showError(err.message);
+    }
+});
+
+// --- LOGIQUE GÉNÉRATION MODULES ---
+document.getElementById('moduleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formationId = document.getElementById('formationId').value;
+    const theme = document.getElementById('moduleTheme').value;
+    startLoading(`Forgeage du module sur le thème : ${theme}...`);
+
+    try {
+        const response = await fetch(`/module/generate/${formationId}?theme=${encodeURIComponent(theme)}`, { method: 'POST' });
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || 'Le volcan est éteint...');
+
+        let html = `
+            <div class="p-6 bg-[#f15a22]/10 border border-[#f15a22]/30 rounded-2xl">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="text-4xl">📜</div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-[#f15a22]">${data.module.title}</h4>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest">Nouveau Module créé dans ${data.module.formation}</p>
+                    </div>
+                </div>
+                <div class="bg-[#0a0a0a] p-4 rounded-xl border border-[#222] text-sm text-gray-400 leading-relaxed">
+                    Le module a été injecté avec succès dans la base de données. Vous pouvez maintenant y ajouter des questions.
+                </div>
+                <button onclick="document.getElementById('moduleId').value=${data.module.id}" class="mt-4 text-xs font-bold text-[#f15a22] hover:underline">
+                    Utiliser cet ID pour générer des questions →
+                </button>
+            </div>`;
+        stopLoading(html, "📚");
+    } catch (err) {
+        showError(err.message);
+    }
+});
+
+function startLoading(msg) {
+    const status = document.getElementById('statusBadge');
+    status.classList.remove('hidden');
+    status.innerText = "Forgeage...";
+    document.getElementById('resultContent').innerHTML = `<div class="loading-lava flex items-center gap-3 font-bold uppercase tracking-tighter text-lg"><span class="animate-spin text-2xl">🌋</span> ${msg}</div>`;
+}
+
+function stopLoading(html, icon) {
+    document.getElementById('statusBadge').classList.add('hidden');
+    document.getElementById('resultIcon').innerText = icon;
+    document.getElementById('resultContent').innerHTML = html;
+}
+
+function showError(msg) {
+    document.getElementById('statusBadge').classList.add('hidden');
+    document.getElementById('resultContent').innerHTML = `<div class="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-500 font-bold">⚠️ Erreur : ${msg}</div>`;
+}
+</script>
+{% endblock %}

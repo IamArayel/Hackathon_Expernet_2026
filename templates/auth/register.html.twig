@@ -2,10 +2,10 @@
 {% block title %}Inscription — Academ'Île{% endblock %}
 
 {% block body %}
-<div class="min-h-[70vh] flex items-center justify-center py-8">
+
+<div class="hero-bg min-h-[70vh] flex items-center justify-center py-8">
     <div class="w-full max-w-md">
 
-        {# Logo + titre #}
         <div class="text-center mb-8">
             <div class="w-16 h-16 bg-lava rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 lava-glow">
                 🌋
@@ -16,15 +16,60 @@
 
         <div class="card-volcanic rounded-2xl p-8">
             {{ form_start(form, {attr: {class: 'space-y-5'}}) }}
-                {% for field in form %}
-                    <div class="symfony-form-field">
-                        {{ form_label(field, null, {label_attr: {class: 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2'}}) }}
-                        {{ form_widget(field) }}
-                        {% if form_errors(field) is not empty %}
-                            <div class="mt-1.5 text-xs text-red-400">{{ form_errors(field) }}</div>
-                        {% endif %}
+
+                {# Email #}
+                <div>
+                    {{ form_label(form.email, null, {label_attr: {class: 'block text-xs font-semibold text-white uppercase tracking-wider mb-2'}}) }}
+                    <div class="relative">
+                        {{ form_widget(form.email, {attr: {class: 'input-volcanic pr-10', autocomplete: 'email'}}) }}
+                        <span id="email-icon" class="field-icon hidden"></span>
                     </div>
-                {% endfor %}
+                    <p id="email-msg" class="mt-1.5 text-xs hidden"></p>
+                    {% if form_errors(form.email) is not empty %}
+                        <div class="mt-1.5 text-xs text-red-400">{{ form_errors(form.email) }}</div>
+                    {% endif %}
+                </div>
+
+                {# Nom d'utilisateur #}
+                <div>
+                    {{ form_label(form.username, null, {label_attr: {class: 'block text-xs font-semibold text-white uppercase tracking-wider mb-2'}}) }}
+                    {{ form_widget(form.username, {attr: {class: 'input-volcanic'}}) }}
+                    {% if form_errors(form.username) is not empty %}
+                        <div class="mt-1.5 text-xs text-red-400">{{ form_errors(form.username) }}</div>
+                    {% endif %}
+                </div>
+
+                {# Mot de passe #}
+                <div>
+                    {{ form_label(form.plainPassword.first, null, {label_attr: {class: 'block text-xs font-semibold text-white uppercase tracking-wider mb-2'}}) }}
+                    {{ form_widget(form.plainPassword.first, {attr: {class: 'input-volcanic', id: 'pwd-first-input', autocomplete: 'new-password'}}) }}
+                    <ul id="pwd-rules" class="mt-2 space-y-1 hidden">
+                        <li id="rule-length"  class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> 12 caractères minimum</li>
+                        <li id="rule-upper"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Une majuscule</li>
+                        <li id="rule-lower"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Une minuscule</li>
+                        <li id="rule-digit"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Un chiffre</li>
+                        <li id="rule-special" class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Un caractère spécial</li>
+                    </ul>
+                    {% if form_errors(form.plainPassword.first) is not empty %}
+                        <div class="mt-1.5 text-xs text-red-400">{{ form_errors(form.plainPassword.first) }}</div>
+                    {% endif %}
+                </div>
+
+                {# Confirmation du mot de passe #}
+                <div>
+                    {{ form_label(form.plainPassword.second, null, {label_attr: {class: 'block text-xs font-semibold text-white uppercase tracking-wider mb-2'}}) }}
+                    <div class="relative">
+                        {{ form_widget(form.plainPassword.second, {attr: {class: 'input-volcanic pr-10', autocomplete: 'new-password'}}) }}
+                        <span id="pwd-icon" class="field-icon hidden"></span>
+                    </div>
+                    <p id="pwd-msg" class="mt-1.5 text-xs hidden"></p>
+                    {% if form_errors(form.plainPassword) is not empty %}
+                        <div class="mt-1.5 text-xs text-red-400">{{ form_errors(form.plainPassword) }}</div>
+                    {% endif %}
+                    {% if form_errors(form.plainPassword.second) is not empty %}
+                        <div class="mt-1.5 text-xs text-red-400">{{ form_errors(form.plainPassword.second) }}</div>
+                    {% endif %}
+                </div>
 
                 <div class="divider-lava"></div>
 
@@ -37,9 +82,115 @@
 
             <p class="mt-6 text-center text-sm text-gray-600">
                 Déjà un compte ?
-                <a href="{{ path('auth_login') }}" class="text-lava hover:underline font-semibold">Se connecter</a>
+                <a href="{{ path('auth_login') }}" class="text-lava hover:underline font-semibold hover:text-[#ff6b2d]">Se connecter</a>
             </p>
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    const pwdFirst  = document.getElementById('registration_form_plainPassword_first');
+    const pwdSecond = document.getElementById('registration_form_plainPassword_second');
+    const pwdIcon   = document.getElementById('pwd-icon');
+    const pwdMsg    = document.getElementById('pwd-msg');
+    const pwdRules  = document.getElementById('pwd-rules');
+
+    const rules = [
+        { id: 'rule-length',  test: function (v) { return v.length >= 12; } },
+        { id: 'rule-upper',   test: function (v) { return /[A-Z]/.test(v); } },
+        { id: 'rule-lower',   test: function (v) { return /[a-z]/.test(v); } },
+        { id: 'rule-digit',   test: function (v) { return /[0-9]/.test(v); } },
+        { id: 'rule-special', test: function (v) { return /[\W_]/.test(v); } },
+    ];
+
+    function checkStrength() {
+        const v = pwdFirst.value;
+
+        if (!v) {
+            pwdRules.classList.add('hidden');
+            pwdFirst.classList.remove('input-invalid', 'input-valid');
+            return;
+        }
+
+        pwdRules.classList.remove('hidden');
+
+        var allOk = true;
+        rules.forEach(function (rule) {
+            const li   = document.getElementById(rule.id);
+            const icon = li.querySelector('.rule-icon');
+            const ok   = rule.test(v);
+            li.classList.toggle('rule-ok',   ok);
+            li.classList.toggle('rule-fail', !ok);
+            icon.textContent = ok ? '✓' : '✗';
+            if (!ok) allOk = false;
+        });
+
+        pwdFirst.classList.toggle('input-invalid', !allOk);
+        pwdFirst.classList.toggle('input-valid',    allOk);
+
+        checkPasswords();
+    }
+
+    function checkPasswords() {
+        const a = pwdFirst.value;
+        const b = pwdSecond.value;
+
+        if (!b) {
+            pwdIcon.className = 'field-icon hidden';
+            pwdMsg.className  = 'mt-1.5 text-xs hidden';
+            return;
+        }
+
+        if (a === b) {
+            pwdIcon.textContent = '✓';
+            pwdIcon.className   = 'field-icon text-green-400';
+            pwdMsg.textContent  = 'Les mots de passe correspondent.';
+            pwdMsg.className    = 'mt-1.5 text-xs text-green-400';
+        } else {
+            pwdIcon.textContent = '✗';
+            pwdIcon.className   = 'field-icon text-red-400';
+            pwdMsg.textContent  = 'Les mots de passe ne correspondent pas.';
+            pwdMsg.className    = 'mt-1.5 text-xs text-red-400';
+        }
+    }
+
+    pwdFirst.addEventListener('input', checkStrength);
+    pwdSecond.addEventListener('input', checkPasswords);
+
+    const emailInput = document.getElementById('registration_form_email');
+    const emailIcon  = document.getElementById('email-icon');
+    const emailMsg   = document.getElementById('email-msg');
+    let emailTimer;
+
+    emailInput.addEventListener('input', function () {
+        clearTimeout(emailTimer);
+        const email = emailInput.value.trim();
+
+        if (!email || !email.includes('@')) {
+            emailIcon.className = 'field-icon hidden';
+            emailMsg.className  = 'mt-1.5 text-xs hidden';
+            return;
+        }
+
+        emailTimer = setTimeout(function () {
+            fetch('/auth/check-email?email=' + encodeURIComponent(email))
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.available) {
+                        emailIcon.textContent = '✓';
+                        emailIcon.className   = 'field-icon text-green-400';
+                        emailMsg.className    = 'mt-1.5 text-xs hidden';
+                    } else {
+                        emailIcon.textContent = '✗';
+                        emailIcon.className   = 'field-icon text-red-400';
+                        emailMsg.textContent  = 'Cette adresse email est déjà utilisée.';
+                        emailMsg.className    = 'mt-1.5 text-xs text-red-400';
+                    }
+                })
+                .catch(function () {});
+        }, 400);
+    });
+}());
+</script>
 {% endblock %}

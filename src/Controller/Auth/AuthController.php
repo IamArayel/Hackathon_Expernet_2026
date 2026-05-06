@@ -4,10 +4,12 @@ namespace App\Controller\Auth;
 
 use App\Entity\User;
 use App\Form\Auth\RegistrationFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -20,6 +22,14 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 #[OA\Tag(name: 'Authentification')]
 class AuthController extends AbstractController
 {
+    #[Route('/check-email', name: 'check_email', methods: ['GET'])]
+    public function checkEmail(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $email = $request->query->get('email', '');
+        $available = $userRepository->findOneBy(['email' => $email]) === null;
+        return $this->json(['available' => $available]);
+    }
+
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     #[OA\Get(
         summary: 'Formulaire de connexion',
