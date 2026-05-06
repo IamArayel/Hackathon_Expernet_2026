@@ -56,18 +56,42 @@
 }
 
 .hero-bg::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255,255,255,0.01) 2px,
-                rgba(255,255,255,0.01) 4px
-            );
-            pointer-events: none;
-        }
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.01) 2px,
+        rgba(255,255,255,0.01) 4px
+    );
+    pointer-events: none;
+}
+
+.input-volcanic.input-invalid {
+    border-color: #f87171;
+    box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.4);
+}
+
+.input-volcanic.input-valid {
+    border-color: #4ade80;
+    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.3);
+}
+
+.field-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    pointer-events: none;
+}
+
+#pwd-rules li.rule-ok   { color: #4ade80; }
+#pwd-rules li.rule-fail { color: #f87171; }
 </style>
 
 <div class="hero-bg min-h-[70vh] flex items-center justify-center bg-ash">
@@ -98,16 +122,27 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Email
                     </label>
-                    <input type="email" name="email" value="{{ last_username }}" required autofocus
-                           class="input-volcanic">
+                    <div class="relative">
+                        <input type="email" id="login-email" name="email" value="{{ last_username }}" required autofocus
+                               class="input-volcanic pr-10">
+                        <span id="email-icon" class="field-icon hidden"></span>
+                    </div>
+                    <p id="email-msg" class="mt-1.5 text-xs hidden"></p>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Mot de passe
                     </label>
-                    <input type="password" name="password" required
+                    <input type="password" id="login-password" name="password" required
                            class="input-volcanic">
+                    <ul id="pwd-rules" class="mt-2 space-y-1 hidden">
+                        <li id="rule-length"  class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> 12 caractères minimum</li>
+                        <li id="rule-upper"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Une majuscule</li>
+                        <li id="rule-lower"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Une minuscule</li>
+                        <li id="rule-digit"   class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Un chiffre</li>
+                        <li id="rule-special" class="flex items-center gap-1.5 text-xs text-gray-500"><span class="rule-icon">○</span> Un caractère spécial</li>
+                    </ul>
                 </div>
 
                 <label class="flex items-center gap-2.5 text-sm text-gray-500 cursor-pointer">
@@ -135,5 +170,84 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    // Email format validation
+    const emailInput = document.getElementById('login-email');
+    const emailIcon  = document.getElementById('email-icon');
+    const emailMsg   = document.getElementById('email-msg');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    emailInput.addEventListener('input', function () {
+        const v = emailInput.value.trim();
+
+        if (!v) {
+            emailInput.classList.remove('input-invalid', 'input-valid');
+            emailIcon.className = 'field-icon hidden';
+            emailMsg.className  = 'mt-1.5 text-xs hidden';
+            return;
+        }
+
+        if (emailRegex.test(v)) {
+            emailInput.classList.remove('input-invalid');
+            emailInput.classList.add('input-valid');
+            emailIcon.textContent = '✓';
+            emailIcon.className   = 'field-icon text-green-400';
+            emailMsg.className    = 'mt-1.5 text-xs hidden';
+        } else {
+            emailInput.classList.remove('input-valid');
+            emailInput.classList.add('input-invalid');
+            emailIcon.textContent = '✗';
+            emailIcon.className   = 'field-icon text-red-400';
+            emailMsg.textContent  = 'Adresse email invalide.';
+            emailMsg.className    = 'mt-1.5 text-xs text-red-400';
+        }
+    });
+
+    // Trigger on page load if field is pre-filled (après une tentative de connexion échouée)
+    if (emailInput.value.trim()) {
+        emailInput.dispatchEvent(new Event('input'));
+    }
+
+    // Password strength validation
+    const pwdInput = document.getElementById('login-password');
+    const pwdRules = document.getElementById('pwd-rules');
+
+    const rules = [
+        { id: 'rule-length',  test: function (v) { return v.length >= 12; } },
+        { id: 'rule-upper',   test: function (v) { return /[A-Z]/.test(v); } },
+        { id: 'rule-lower',   test: function (v) { return /[a-z]/.test(v); } },
+        { id: 'rule-digit',   test: function (v) { return /[0-9]/.test(v); } },
+        { id: 'rule-special', test: function (v) { return /[\W_]/.test(v); } },
+    ];
+
+    pwdInput.addEventListener('input', function () {
+        const v = pwdInput.value;
+
+        if (!v) {
+            pwdRules.classList.add('hidden');
+            pwdInput.classList.remove('input-invalid', 'input-valid');
+            return;
+        }
+
+        pwdRules.classList.remove('hidden');
+
+        var allOk = true;
+        rules.forEach(function (rule) {
+            const li   = document.getElementById(rule.id);
+            const icon = li.querySelector('.rule-icon');
+            const ok   = rule.test(v);
+            li.classList.toggle('rule-ok',   ok);
+            li.classList.toggle('rule-fail', !ok);
+            icon.textContent = ok ? '✓' : '✗';
+            if (!ok) allOk = false;
+        });
+
+        pwdInput.classList.toggle('input-invalid', !allOk);
+        pwdInput.classList.toggle('input-valid',    allOk);
+    });
+}());
+</script>
 
 {% endblock %}
